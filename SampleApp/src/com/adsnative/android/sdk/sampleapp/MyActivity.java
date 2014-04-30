@@ -18,21 +18,11 @@ import java.util.TimeZone;
 
 public class MyActivity extends ListActivity {
 
-    private static final String DEBUG = "TESTEST";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         DeviceInfo deviceInfo = new DeviceInfo(this);
-        Log.d(DEBUG, "OsVersrion: " + deviceInfo.getOsVersion());
-        Log.d(DEBUG, "UA: " + deviceInfo.getUserAgent());
-        Log.d(DEBUG, "ConnType: " + deviceInfo.getConnectionType());
-        Log.d(DEBUG, "DevModel: " + deviceInfo.getDeviceModel());
-        Log.d(DEBUG, "Locale: " + Locale.getDefault().toString());
-        Log.d(DEBUG, "ODIN1: " + deviceInfo.getODIN1());
-        Log.d(DEBUG, "Vendor: " + deviceInfo.getIdentifierForVendor());
-        Log.d(DEBUG, "TimeZone: " + TimeZone.getDefault().getID());
 
         List<MainListItem> listItems = new ArrayList<MainListItem>();
         listItems.add(new MainListItem("News", R.drawable.news));
