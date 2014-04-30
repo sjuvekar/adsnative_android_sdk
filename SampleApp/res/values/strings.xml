@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AdsNative</string>
+    <string name="app">APPLICATIONS</string>
+    <string name="action_settings">Settings</string>
+    <string name="news">News</string>
+    <string name="youtube">YouTube</string>
+    <string name="example_title">Example title</string>
+    <string name="example_by_line">by Anonymous</string>
+    <string name="not_yet">Not yet implemented...</string>
+</resources>
