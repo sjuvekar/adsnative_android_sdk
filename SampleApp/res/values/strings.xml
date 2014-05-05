@@ -7,5 +7,7 @@
     <string name="youtube">YouTube</string>
     <string name="example_title">Example title</string>
     <string name="example_by_line">by Anonymous</string>
+    <string name="davin">by Davin</string>
     <string name="not_yet">Not yet implemented...</string>
+    <string name="please_wait">Please wait...</string>
 </resources>

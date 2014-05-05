@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adsnative.android.sdk.sampleapp.R;
-import com.adsnative.android.sdk.sampleapp.item.NewsItem;
+import com.adsnative.android.sdk.sampleapp.item.YouTubeItem;
 
 import java.util.List;
 
-public class NewsAdapter extends ArrayAdapter<NewsItem> {
+public class YouTubeAdapter extends ArrayAdapter<YouTubeItem> {
 
-    public NewsAdapter(Context context, int resource, List<NewsItem> items) {
+    public YouTubeAdapter(Context context, int resource, List<YouTubeItem> items) {
         super(context, resource, items);
     }
 
@@ -28,17 +28,16 @@ public class NewsAdapter extends ArrayAdapter<NewsItem> {
 
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.news_list_item, null);
+            v = vi.inflate(R.layout.youtube_list_item, null);
 
         }
 
-        NewsItem element = getItem(position);
+        YouTubeItem element = getItem(position);
 
         if (element != null) {
 
-            ImageView imageView = (ImageView) v.findViewById(R.id.news_list_image);
-            TextView title = (TextView) v.findViewById(R.id.news_list_title);
-            TextView byLine = (TextView) v.findViewById(R.id.news_list_by_line);
+            ImageView imageView = (ImageView) v.findViewById(R.id.yt_list_image);
+            TextView title = (TextView) v.findViewById(R.id.yt_list_title);
 
             if (imageView != null) {
                 if (element.getBitmap() != null)
@@ -49,10 +48,6 @@ public class NewsAdapter extends ArrayAdapter<NewsItem> {
 
             if (title != null) {
                 title.setText(element.getTitle());
-            }
-
-            if (byLine != null) {
-                byLine.setText(element.getByLine());
             }
         }
 

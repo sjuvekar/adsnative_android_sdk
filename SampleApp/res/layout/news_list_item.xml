@@ -35,11 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:padding="5dp"
-            android:text="@string/example_by_line"
+            android:text="@string/davin"
             android:singleLine="true"
             android:textColor="@android:color/darker_gray"/>
 
-        </LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

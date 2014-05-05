@@ -3,7 +3,6 @@ package com.adsnative.android.sdk.sampleapp;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -13,8 +12,6 @@ import com.adsnative.android.sdk.sampleapp.item.MainListItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class MyActivity extends ListActivity {
 
@@ -37,12 +34,13 @@ public class MyActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        switch (position){
+        switch (position) {
             case 0:
                 startActivity(new Intent(this, NewsActivity.class));
                 break;
             case 1:
                 startActivity(new Intent(this, YouTubeActivity.class));
+                break;
         }
     }
 }

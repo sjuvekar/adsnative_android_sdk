@@ -65,7 +65,7 @@ public class NewsActivity extends ListActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(NewsActivity.this);
-            progressDialog.setMessage("Please wait...");
+            progressDialog.setMessage(getString(R.string.please_wait));
             progressDialog.show();
 
         }

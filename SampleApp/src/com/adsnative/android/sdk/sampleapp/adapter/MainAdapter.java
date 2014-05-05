@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.adsnative.android.sdk.sampleapp.item.MainListItem;
 import com.adsnative.android.sdk.sampleapp.R;
+import com.adsnative.android.sdk.sampleapp.item.MainListItem;
 
 import java.util.List;
 

@@ -30,6 +30,7 @@
 
         <activity
             android:name=".YouTubeActivity"
-            android:label="@string/youtube"/>
+            android:label="@string/youtube"
+            android:configChanges="orientation|screenSize"/>
     </application>
 </manifest>
