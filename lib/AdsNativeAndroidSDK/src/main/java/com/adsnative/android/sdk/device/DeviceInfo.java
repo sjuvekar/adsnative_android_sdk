@@ -37,7 +37,7 @@ public class DeviceInfo {
     }
 
     public String getLocale() {
-        return Locale.getDefault().getDisplayLanguage();
+        return Locale.getDefault().toString();
     }
 
     public String getTimeZone() {
