@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.YouTubeAdapter;
+import com.adsnative.android.sdk.sampleapp.item.NewsItem;
 import com.adsnative.android.sdk.sampleapp.item.YouTubeItem;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
 
@@ -49,7 +51,25 @@ public class YouTubeActivity extends ListActivity {
 
         youTubeItems = new ArrayList<YouTubeItem>();
 
-        new GetYouTubeFeed().execute(JSON_URL);
+        new GetYouTubeFeed(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog = new ProgressDialog(YouTubeActivity.this);
+                progressDialog.setMessage(getString(R.string.please_wait));
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(List<YouTubeItem> list) {
+                super.onPostExecute(list);
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+                setItems(list);
+            }
+        }.execute(JSON_URL);
     }
 
     @Override
@@ -61,20 +81,20 @@ public class YouTubeActivity extends ListActivity {
         startActivity(intent);
     }
 
-    private class GetYouTubeFeed extends AsyncTask<String, Void, Void> {
+    protected void setItems(List<YouTubeItem> items) {
+        youTubeItems = items;
+        YouTubeAdapter youTubeAdapter = new YouTubeAdapter(YouTubeActivity.this, R.layout.youtube_list_item, youTubeItems);
+        setListAdapter(youTubeAdapter);
+    }
+
+    private class GetYouTubeFeed extends AsyncTask<String, Void, List<YouTubeItem>> {
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(YouTubeActivity.this);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
+        protected List<YouTubeItem> doInBackground(String... params) {
             ServiceHandler serviceHandler = new ServiceHandler();
             String jsonStr = serviceHandler.makeServiceCall(params[0], ServiceHandler.GET);
+
+            List<YouTubeItem> list = new ArrayList<YouTubeItem>();
 
             if (jsonStr != null) {
 
@@ -101,7 +121,7 @@ public class YouTubeActivity extends ListActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(new URL(imageUrl).openConnection().getInputStream());
 
                         YouTubeItem youTubeItem = new YouTubeItem(url, titleStr, bitmap);
-                        youTubeItems.add(youTubeItem);
+                        list.add(youTubeItem);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -111,20 +131,7 @@ public class YouTubeActivity extends ListActivity {
                     e.printStackTrace();
                 }
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-
-            YouTubeAdapter youTubeAdapter = new YouTubeAdapter(YouTubeActivity.this, R.layout.youtube_list_item, youTubeItems);
-
-            setListAdapter(youTubeAdapter);
-
-
+            return list;
         }
     }
 }
