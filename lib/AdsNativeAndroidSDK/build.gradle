@@ -1,3 +1,5 @@
+//Running 'gradle makeJar' in AdsNativeAndroidSDK folder (in current project) creates a AdsNativeAndroidSDK.jar in the build/libs directory
+
 apply plugin: 'android-library'
 apply plugin: 'robolectric'
 android {
@@ -16,7 +18,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
     sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            resources {
+                srcDir 'src/main/res'
+            }
+        }
+
         androidTest.setRoot('src/test')
     }
 }
@@ -31,3 +43,16 @@ dependencies {
     androidTestCompile "org.mockito:mockito-all:1.9.5"
 
 }
+
+task clearJar(type: Delete) {
+    delete 'build/libs/AdsNativeAndroidSDK.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/bundles/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename('classes.jar', 'AdsNativeAndroidSDK.jar')
+}
+
+makeJar.dependsOn(clearJar, build)

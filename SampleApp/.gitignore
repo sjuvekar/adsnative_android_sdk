@@ -1,0 +1,11 @@
+.DS_Store
+.idea
+SampleApp.iml
+ant.properties
+bin/
+build.xml
+gen/
+local.properties
+out/
+proguard-project.txt
+project.properties
