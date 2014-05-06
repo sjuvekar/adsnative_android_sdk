@@ -51,7 +51,6 @@ public class NewsActivity extends ListActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-
                 progressDialog = new ProgressDialog(NewsActivity.this);
                 progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.show();
@@ -60,7 +59,6 @@ public class NewsActivity extends ListActivity {
             @Override
             protected void onPostExecute(List<NewsItem> list) {
                 super.onPostExecute(list);
-
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 

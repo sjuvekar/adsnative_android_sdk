@@ -67,9 +67,7 @@ public class YouTubeActivity extends ListActivity {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
-                YouTubeAdapter youTubeAdapter = new YouTubeAdapter(YouTubeActivity.this, R.layout.youtube_list_item, youTubeItems);
-
-                setListAdapter(youTubeAdapter);
+                setItems(list);
             }
         }.execute(JSON_URL);
     }
