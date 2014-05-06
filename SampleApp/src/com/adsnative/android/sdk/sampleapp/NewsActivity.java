@@ -47,7 +47,26 @@ public class NewsActivity extends ListActivity {
 
         newsItems = new ArrayList<NewsItem>();
 
-        new GetNews().execute(JSON_URL);
+        new GetNews(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                progressDialog = new ProgressDialog(NewsActivity.this);
+                progressDialog.setMessage(getString(R.string.please_wait));
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(List<NewsItem> list) {
+                super.onPostExecute(list);
+
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+                setItems(list);
+            }
+        }.execute(JSON_URL);
     }
 
     @Override
@@ -59,22 +78,20 @@ public class NewsActivity extends ListActivity {
         startActivity(intent);
     }
 
-    private class GetNews extends AsyncTask<String, Void, Void> {
+
+    protected void setItems(List<NewsItem> items) {
+        newsItems = items;
+        NewsAdapter newsAdapter = new NewsAdapter(NewsActivity.this, R.layout.news_list_item, newsItems);
+        setListAdapter(newsAdapter);
+    }
+
+    private class GetNews extends AsyncTask<String, Void, List<NewsItem>> {
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(NewsActivity.this);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.show();
-
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
+        protected List<NewsItem> doInBackground(String... params) {
             ServiceHandler serviceHandler = new ServiceHandler();
             String jsonStr = serviceHandler.makeServiceCall(params[0], ServiceHandler.GET);
-
+            List<NewsItem> list = new ArrayList<NewsItem>();
             if (jsonStr != null) {
                 try {
 
@@ -99,7 +116,7 @@ public class NewsActivity extends ListActivity {
                         }
 
                         NewsItem item = new NewsItem(url, title, byLine, bitmap);
-                        newsItems.add(item);
+                        list.add(item);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -111,19 +128,7 @@ public class NewsActivity extends ListActivity {
             } else {
                 Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-
-            NewsAdapter newsAdapter = new NewsAdapter(NewsActivity.this, R.layout.news_list_item, newsItems);
-
-            setListAdapter(newsAdapter);
+            return list;
         }
     }
 }
