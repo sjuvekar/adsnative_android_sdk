@@ -45,12 +45,12 @@ public class DeviceInfoTest {
 
     @Test
     public void localeShouldNotBeNull() {
-        Assert.assertEquals(Locale.getDefault().getDisplayLanguage(), deviceInfo.getLocale());
+        Assert.assertNotNull("Locale is null", deviceInfo.getLocale());
     }
 
     @Test
     public void timeZoneShouldNotBeNull() {
-        Assert.assertEquals(TimeZone.getDefault().getDisplayName(), deviceInfo.getTimeZone());
+        Assert.assertNotNull("TimeZone is null", deviceInfo.getTimeZone());
     }
 
     @Test
