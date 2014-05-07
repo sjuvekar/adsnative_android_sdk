@@ -84,7 +84,7 @@ public class NewsActivity extends ListActivity {
     }
 
     protected void fetchAd(){
-        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("D8TqdJ7Nc8XT5cKIzXqDayoxrrTlOwSxRUX9gslp"), getBaseContext());
+        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs"), getBaseContext());
         sponsoredStory.loadRequest();
         sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
             @Override
