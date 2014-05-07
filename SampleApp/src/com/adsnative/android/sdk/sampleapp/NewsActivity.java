@@ -10,11 +10,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.adsnative.android.sdk.request.AdRequest;
 import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
 import com.adsnative.android.sdk.sampleapp.item.NewsItem;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
+import com.adsnative.android.sdk.story.OnSponsoredStoryListener;
+import com.adsnative.android.sdk.story.SponsoredStory;
+import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +68,8 @@ public class NewsActivity extends ListActivity {
                     progressDialog.dismiss();
 
                 setItems(list);
+
+                fetchAd();
             }
         }.execute(JSON_URL);
     }
@@ -76,6 +83,28 @@ public class NewsActivity extends ListActivity {
         startActivity(intent);
     }
 
+    protected void fetchAd(){
+        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("D8TqdJ7Nc8XT5cKIzXqDayoxrrTlOwSxRUX9gslp"), getBaseContext());
+        sponsoredStory.loadRequest();
+        sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
+            @Override
+            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                NewsItem newsItem = new NewsItem(sponsoredStoryData.getUrl(), sponsoredStoryData.getTitle(), sponsoredStoryData.getPromotedBy(), bitmap);
+                if (newsItems.size() > 2){
+                    newsItems.add(2, newsItem);
+                } else {
+                    newsItems.add(newsItem);
+                }
+                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+            }
+        });
+    }
 
     protected void setItems(List<NewsItem> items) {
         newsItems = items;
