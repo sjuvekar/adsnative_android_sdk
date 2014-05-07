@@ -9,13 +9,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.adsnative.android.sdk.request.AdRequest;
 import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.YouTubeAdapter;
 import com.adsnative.android.sdk.sampleapp.item.NewsItem;
 import com.adsnative.android.sdk.sampleapp.item.YouTubeItem;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
+import com.adsnative.android.sdk.story.OnSponsoredStoryListener;
+import com.adsnative.android.sdk.story.SponsoredStory;
+import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +73,8 @@ public class YouTubeActivity extends ListActivity {
                     progressDialog.dismiss();
 
                 setItems(list);
+
+                fetchAd();
             }
         }.execute(JSON_URL);
     }
@@ -79,6 +86,30 @@ public class YouTubeActivity extends ListActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+
+    protected void fetchAd(){
+        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("2-cIvYDwuRBFYSgRR3Xfvt9fsC_bnsXIb1YRn47w"), getBaseContext());
+        sponsoredStory.loadRequest();
+        sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
+            @Override
+            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                YouTubeItem youTubeItem = new YouTubeItem(sponsoredStoryData.getUrl(), sponsoredStoryData.getTitle(), bitmap);
+                if (youTubeItems.size() > 2){
+                    youTubeItems.add(2, youTubeItem);
+                } else {
+                    youTubeItems.add(youTubeItem);
+                }
+                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+            }
+        });
     }
 
     protected void setItems(List<YouTubeItem> items) {
