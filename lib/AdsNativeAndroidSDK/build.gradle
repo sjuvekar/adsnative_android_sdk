@@ -44,9 +44,17 @@ dependencies {
 
 }
 
+//task jar(type: Jar) {
+////    appendix = "fat"
+//    from android.sourceSets.main.java
+//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//}
+
 task clearJar(type: Delete) {
     delete 'build/libs/AdsNativeAndroidSDK.jar'
 }
+
+
 
 task makeJar(type: Copy) {
     from('build/bundles/release/')
