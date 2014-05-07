@@ -90,7 +90,7 @@ public class YouTubeActivity extends ListActivity {
 
 
     protected void fetchAd(){
-        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("2-cIvYDwuRBFYSgRR3Xfvt9fsC_bnsXIb1YRn47w"), getBaseContext());
+        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs"), getBaseContext());
         sponsoredStory.loadRequest();
         sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
             @Override
