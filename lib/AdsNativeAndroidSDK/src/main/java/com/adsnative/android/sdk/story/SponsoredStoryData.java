@@ -1,5 +1,7 @@
 package com.adsnative.android.sdk.story;
 
+import android.graphics.Bitmap;
+
 public class SponsoredStoryData {
 
     private String title;
@@ -15,6 +17,7 @@ public class SponsoredStoryData {
     private String campaignId;
     private String sessionId;
     private String zoneId;
+    private Bitmap thumbnailBitmap;
 
     public String getTitle() {
         return title;
@@ -118,6 +121,14 @@ public class SponsoredStoryData {
 
     public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public Bitmap getThumbnailBitmap() {
+        return thumbnailBitmap;
+    }
+
+    public void setThumbnailBitmap(Bitmap thumbnailBitmap) {
+        this.thumbnailBitmap = thumbnailBitmap;
     }
 }
 

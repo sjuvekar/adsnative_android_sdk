@@ -1,6 +1,7 @@
 package com.adsnative.android.sdk.story;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.adsnative.android.sdk.device.DeviceInfo;
@@ -11,6 +12,10 @@ import com.adsnative.android.sdk.request.GetSponsoredStoryResponse;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class SponsoredStory {
 
@@ -20,7 +25,6 @@ public class SponsoredStory {
     private Context context;
     private DeviceInfo deviceInfo;
     private OnSponsoredStoryListener onSponsoredStoryListener;
-
 
     public SponsoredStory(AdRequest adRequest, Context context) {
         this.adRequest = adRequest;
@@ -78,7 +82,12 @@ public class SponsoredStory {
                 SponsoredStoryData sponsoredStoryData = null;
                 try {
                     sponsoredStoryData = new GetSponsoredStoryResponse(json).parseJson();
+                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL("http:" + sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream()));
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return sponsoredStoryData;
