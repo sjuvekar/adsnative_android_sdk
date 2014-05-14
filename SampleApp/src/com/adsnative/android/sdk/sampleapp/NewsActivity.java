@@ -10,16 +10,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import com.adsnative.android.sdk.request.AdRequest;
+import com.adsnative.android.sdk.adapter.AdsNativeListAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
 import com.adsnative.android.sdk.sampleapp.item.NewsItem;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
-import com.adsnative.android.sdk.story.OnSponsoredStoryListener;
-import com.adsnative.android.sdk.story.SponsoredStory;
-import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +65,6 @@ public class NewsActivity extends ListActivity {
 
                 setItems(list);
 
-                fetchAd();
             }
         }.execute(JSON_URL);
     }
@@ -77,39 +72,23 @@ public class NewsActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        String url = newsItems.get(position).getUrl();
+        NewsItem newsItem = (NewsItem) getListAdapter().getItem(position);
+        String url = newsItem.getUrl();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
     }
 
-    protected void fetchAd(){
-        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs"), getBaseContext());
-        sponsoredStory.loadRequest();
-        sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
-            @Override
-            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-                Bitmap bitmap = null;
-                try {
-                    bitmap = BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                NewsItem newsItem = new NewsItem(sponsoredStoryData.getUrl(), sponsoredStoryData.getTitle(), sponsoredStoryData.getPromotedBy(), bitmap);
-                if (newsItems.size() > 2){
-                    newsItems.add(2, newsItem);
-                } else {
-                    newsItems.add(newsItem);
-                }
-                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
-            }
-        });
-    }
-
     protected void setItems(List<NewsItem> items) {
         newsItems = items;
         NewsAdapter newsAdapter = new NewsAdapter(NewsActivity.this, R.layout.news_list_item, newsItems);
-        setListAdapter(newsAdapter);
+        List<Integer> adPositions = new ArrayList<Integer>();
+        adPositions.add(2);
+        adPositions.add(7);
+        adPositions.add(100);
+        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), newsAdapter, adPositions, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+        setListAdapter(adsNativeListAdapter);
+        adsNativeListAdapter.loadSponsoredStories();
     }
 
     private class GetNews extends AsyncTask<String, Void, List<NewsItem>> {
