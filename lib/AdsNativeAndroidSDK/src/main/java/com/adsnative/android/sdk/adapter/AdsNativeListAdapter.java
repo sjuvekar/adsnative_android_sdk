@@ -33,7 +33,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = sponsoredStoriesPositions;
         this.sponsoredStories = new ArrayList<SponsoredStory>();
-        Log.d("TESTEST", "Constructor original get count: " + this.originalAdapter.getCount());
         this.positionControllerList = new PositionControllerList(this.originalAdapter.getCount());
         this.sponsoredStoryController = new SponsoredStoryController(context, this.adUnitId);
         this.adUnitId = adUnitId;
@@ -49,6 +48,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 AdsNativeListAdapter.this.notifyDataSetInvalidated();
             }
         });
+
     }
 
     public void notifyDataSetChanged() {
@@ -128,12 +128,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         SponsoredStory sponsoredStory = this.positionControllerList.getSponsoredStory(position);
         if (sponsoredStory == null) {
             int originalPosition = this.positionControllerList.getOriginalPosition(position);
-
-            View view = this.originalAdapter.getView(originalPosition, convertView, parent);
-            if (this.onItemClickListener != null) {
-                view.setOnClickListener((View.OnClickListener) onItemClickListener);
-            }
-            return view;
+            return this.originalAdapter.getView(originalPosition, convertView, parent);
 
         }
 

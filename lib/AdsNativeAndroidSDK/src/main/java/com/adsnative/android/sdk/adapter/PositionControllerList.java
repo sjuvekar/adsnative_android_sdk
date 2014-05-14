@@ -1,7 +1,5 @@
 package com.adsnative.android.sdk.adapter;
 
-import android.util.Log;
-
 import com.adsnative.android.sdk.story.SponsoredStory;
 
 import java.util.ArrayList;
@@ -31,10 +29,7 @@ public class PositionControllerList {
     }
 
     public int getOriginalPosition(int position) {
-        Log.d("TESTEST", "getOriginalPosition: " + position);
-        int pos = originalPositionsList.get(position);
-        Log.d("TESTEST", "getOriginalPositionNEW: " + pos);
-        return pos;
+        return this.originalPositionsList.get(position);
     }
 
     public boolean isAd(int position) {
@@ -74,11 +69,14 @@ public class PositionControllerList {
             sponsoredStoriesList.add(s);
         }
 
+        int outOfBoundsCount = 0;
         for (Integer i : newPositions) {
+            if ( i > originalSize - 1){
+                i = originalSize - 1 + outOfBoundsCount;
+                outOfBoundsCount++;
+            }
             sponsoredStoriesPositionsList.add(i);
         }
-
-
     }
 
     public void updateLists() {
