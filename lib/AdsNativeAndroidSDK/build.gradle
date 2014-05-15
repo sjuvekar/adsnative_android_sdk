@@ -2,6 +2,7 @@
 
 apply plugin: 'android-library'
 apply plugin: 'robolectric'
+
 android {
     compileSdkVersion 19
     buildToolsVersion "19.0.3"
@@ -34,7 +35,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.android.gms:play-services:4.3.23'
 
@@ -44,16 +45,14 @@ dependencies {
 
 }
 
-//task jar(type: Jar) {
-////    appendix = "fat"
-//    from android.sourceSets.main.java
-//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-//}
-
 task clearJar(type: Delete) {
     delete 'build/libs/AdsNativeAndroidSDK.jar'
 }
 
+//task jar(type: Jar) {
+//    from('build/libs/AdsNativeAndroidSDK')
+////    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//}
 
 
 task makeJar(type: Copy) {

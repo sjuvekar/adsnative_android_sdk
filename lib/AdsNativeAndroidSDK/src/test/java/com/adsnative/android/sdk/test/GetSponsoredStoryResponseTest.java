@@ -1,11 +1,6 @@
 package com.adsnative.android.sdk.test;
 
 
-import android.content.Context;
-import android.util.Log;
-
-import com.adsnative.android.sdk.request.AdRequest;
-import com.adsnative.android.sdk.request.GetSponsoredStoryRequest;
 import com.adsnative.android.sdk.request.GetSponsoredStoryResponse;
 
 import junit.framework.Assert;
@@ -14,7 +9,6 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -26,7 +20,7 @@ public class GetSponsoredStoryResponseTest {
             "        \"backgroundColor\": \"#fefff2\"," +
             "        \"brandImageUrl\": \"http://dev-www.adsnative.com/media/brand_images/1/82cc86ad-9070-4b90-9006-1fbca6697694.jpg\"," +
             "        \"embedUrl\": \"http://api.adsnative.com/v1/creative.html?crid=xyz&sid=sid123\"," +
-            "        \"imageSrc\": \"http://files-www2.adsnative.com/media/1/xyz.jpg\"," +
+            "        \"imageSrc\": \"//files-www2.adsnative.com/media/1/xyz.jpg\"," +
             "        \"promotedBy\": \"Tesla\"," +
             "        \"promotedByTag\": \"Promoted by\"," +
             "        \"promotedByUrl\": \"http://api.adsnative.com/v1/ad.click?u=http%3A%2F%2Fxyz.com%2F&sid=sid123\"," +
