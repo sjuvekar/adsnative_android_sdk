@@ -9,18 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import com.adsnative.android.sdk.request.AdRequest;
-import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
+import com.adsnative.android.sdk.adapter.AdsNativeListAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.YouTubeAdapter;
-import com.adsnative.android.sdk.sampleapp.item.NewsItem;
 import com.adsnative.android.sdk.sampleapp.item.YouTubeItem;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
-import com.adsnative.android.sdk.story.OnSponsoredStoryListener;
-import com.adsnative.android.sdk.story.SponsoredStory;
-import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,7 +68,6 @@ public class YouTubeActivity extends ListActivity {
 
                 setItems(list);
 
-                fetchAd();
             }
         }.execute(JSON_URL);
     }
@@ -82,40 +75,23 @@ public class YouTubeActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        String url = youTubeItems.get(position).getUrl();
+        YouTubeItem youTubeItem = (YouTubeItem) getListAdapter().getItem(position);
+        String url = youTubeItem.getUrl();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
     }
 
-
-    protected void fetchAd(){
-        SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest("Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs"), getBaseContext());
-        sponsoredStory.loadRequest();
-        sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
-            @Override
-            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-                Bitmap bitmap = null;
-                try {
-                    bitmap = BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                YouTubeItem youTubeItem = new YouTubeItem(sponsoredStoryData.getUrl(), sponsoredStoryData.getTitle(), bitmap);
-                if (youTubeItems.size() > 2){
-                    youTubeItems.add(2, youTubeItem);
-                } else {
-                    youTubeItems.add(youTubeItem);
-                }
-                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
-            }
-        });
-    }
-
     protected void setItems(List<YouTubeItem> items) {
         youTubeItems = items;
         YouTubeAdapter youTubeAdapter = new YouTubeAdapter(YouTubeActivity.this, R.layout.youtube_list_item, youTubeItems);
-        setListAdapter(youTubeAdapter);
+        List<Integer> adPositions = new ArrayList<Integer>();
+        adPositions.add(2);
+        adPositions.add(6);
+        adPositions.add(25);
+        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), youTubeAdapter, adPositions, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+        setListAdapter(adsNativeListAdapter);
+        adsNativeListAdapter.loadSponsoredStories();
     }
 
     private class GetYouTubeFeed extends AsyncTask<String, Void, List<YouTubeItem>> {
