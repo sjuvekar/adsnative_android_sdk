@@ -50,7 +50,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     }
 
-    private void internalNotifyDataSetChanged(){
+    private void internalNotifyDataSetChanged() {
         this.positionControllerList.updateLists();
         super.notifyDataSetChanged();
     }
@@ -64,7 +64,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         return this.sponsoredStoryController.placeSponsoredStory(sponsoredStory, convertView, parent);
     }
 
-    public void clearAds(){
+    public void clearAds() {
         this.sponsoredStories.clear();
         this.sponsoredStoryController.clearAds();
         this.positionControllerList.clearSponsoredStories();
@@ -108,14 +108,13 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     @Override
     public int getCount() {
-    return this.positionControllerList.getAdjustedCount();
+        return this.positionControllerList.getAdjustedCount();
     }
 
     public int getViewTypeCount() {
         return this.originalAdapter.getViewTypeCount() + 1;
     }
 
-    //
     public int getItemViewType(int position) {
         return this.positionControllerList.isAd(position) ? 0 : this.originalAdapter.getItemViewType(this.positionControllerList.getOriginalPosition(position)) + 1;
     }

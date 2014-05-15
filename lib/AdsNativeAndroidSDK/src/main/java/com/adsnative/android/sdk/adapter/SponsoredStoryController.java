@@ -92,7 +92,7 @@ public class SponsoredStoryController {
 
     }
 
-    public void clearAds(){
+    public void clearAds() {
         this.sponsoredStoryWeakHashMap.clear();
     }
 
