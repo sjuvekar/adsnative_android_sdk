@@ -3,8 +3,6 @@ package com.adsnative.android.sdk.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -21,21 +19,15 @@ import java.util.WeakHashMap;
 public class SponsoredStoryController {
 
     private final Context context;
-    private final Handler impressionHandler;
     private final SponsoredStoryClickListener sponsoredStoryClickListener;
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private final String adUnitId;
 
     public SponsoredStoryController(Context context, /*PositionController positionController,*/ String adUnitId) {
         this.context = context;
-        this.impressionHandler = new Handler();
         this.adUnitId = adUnitId;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         sponsoredStoryWeakHashMap = new WeakHashMap<View, SponsoredStory>();
-    }
-
-    void clearPendingImpressions() {
-        this.impressionHandler.removeMessages(0);
     }
 
     public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
@@ -57,7 +49,6 @@ public class SponsoredStoryController {
     }
 
     private View getStoryView(SponsoredStoryData sponsoredStoryData) {
-        Log.d("Testest", "GetStoryView");
         float density = context.getResources().getDisplayMetrics().density;
 
         LinearLayout linearLayout = new LinearLayout(context);
@@ -101,6 +92,10 @@ public class SponsoredStoryController {
 
     }
 
+    public void clearAds(){
+        this.sponsoredStoryWeakHashMap.clear();
+    }
+
     public void clearAd(View view) {
         if (view == null)
             return;
@@ -118,7 +113,6 @@ public class SponsoredStoryController {
 
         @Override
         public void onClick(View v) {
-            Log.d("TESTEST", "STORYCLICKED!!!!!!!!");
             SponsoredStory sponsoredStory = sponsoredStoryWeakHashMap.get(v);
             String url = sponsoredStory.getSponsoredStoryData().getUrl();
             //Open in Browser

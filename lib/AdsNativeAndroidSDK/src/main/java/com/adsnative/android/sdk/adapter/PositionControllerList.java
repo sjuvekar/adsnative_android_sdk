@@ -9,6 +9,7 @@ import java.util.List;
 public class PositionControllerList {
     private List<SponsoredStory> sponsoredStoriesList;
     private List<Integer> sponsoredStoriesPositionsList;
+    private List<Integer> sponsoredStoriesPositionsListAdjusted;
     private HashMap<Integer, Integer> originalPositionsList;
     private int originalSize;
     private int mergedListSize;
@@ -18,10 +19,21 @@ public class PositionControllerList {
         this.mergedListSize = originalSize;
         this.sponsoredStoriesList = new ArrayList<SponsoredStory>();
         this.sponsoredStoriesPositionsList = new ArrayList<Integer>();
+        this.sponsoredStoriesPositionsListAdjusted = new ArrayList<Integer>();
         this.originalPositionsList = new HashMap<Integer, Integer>();
         for (int i = 0; i < this.originalSize; i++) {
             this.originalPositionsList.put(i, i);
         }
+    }
+
+    public void setOriginalSize(int originalSize) {
+        this.originalSize = originalSize;
+    }
+
+    public void updateOriginalSize(int newSize) {
+        setOriginalSize(newSize);
+        createDefaultOriginals();
+        adjustSponsoredStoriesPositionsList();
     }
 
     public int getAdjustedCount() {
@@ -33,13 +45,13 @@ public class PositionControllerList {
     }
 
     public boolean isAd(int position) {
-        return sponsoredStoriesPositionsList.contains(position);
+        return sponsoredStoriesPositionsListAdjusted.contains(position);
     }
 
     public SponsoredStory getSponsoredStory(int position) {
-        if (sponsoredStoriesPositionsList.contains(position)) {
+        if (sponsoredStoriesPositionsListAdjusted.contains(position)) {
             int index = 0;
-            for (Integer i : sponsoredStoriesPositionsList) {
+            for (Integer i : sponsoredStoriesPositionsListAdjusted) {
                 if (i == position)
                     return sponsoredStoriesList.get(index);
                 index++;
@@ -51,6 +63,16 @@ public class PositionControllerList {
     public void clearSponsoredStories() {
         sponsoredStoriesList.clear();
         sponsoredStoriesPositionsList.clear();
+        sponsoredStoriesPositionsListAdjusted.clear();
+        createDefaultOriginals();
+        mergedListSize = originalSize;
+    }
+
+    private void createDefaultOriginals() {
+        this.originalPositionsList.clear();
+        for (int i = 0; i < this.originalSize; i++) {
+            this.originalPositionsList.put(i, i);
+        }
     }
 
     public void insertSponsoredStories(List<SponsoredStory> newSponsoredStories, List<Integer> newPositions) {
@@ -58,34 +80,31 @@ public class PositionControllerList {
         if (newSponsoredStories.size() != newPositions.size())
             return;
 
-//        for (Integer i : newPositions) {
-//            if (sponsoredStoriesPositionsList.contains(i)) {
-//                newSponsoredStories.remove(newPositions.indexOf(i));
-//                newPositions.remove(i);
-//            }
-//        }
+        clearSponsoredStories();
+        sponsoredStoriesList = newSponsoredStories;
+        sponsoredStoriesPositionsList = newPositions;
+        adjustSponsoredStoriesPositionsList();
+    }
 
-        for (SponsoredStory s : newSponsoredStories) {
-            sponsoredStoriesList.add(s);
-        }
-
-        int outOfBoundsCount = 0;
-        for (Integer i : newPositions) {
-            if ( i > originalSize - 1){
-                i = originalSize - 1 + outOfBoundsCount;
-                outOfBoundsCount++;
-            }
-            sponsoredStoriesPositionsList.add(i);
+    private void adjustSponsoredStoriesPositionsList() {
+        this.sponsoredStoriesPositionsListAdjusted.clear();
+        mergedListSize = originalSize;
+        for (Integer i : sponsoredStoriesPositionsList) {
+            mergedListSize++;
+            if (i > mergedListSize - 1)
+                i = mergedListSize - 1;
+            sponsoredStoriesPositionsListAdjusted.add(i);
         }
     }
 
     public void updateLists() {
         HashMap<Integer, Integer> tmpHashMap = new HashMap<Integer, Integer>();
-        int range = mergedListSize;
-        for (Integer i : sponsoredStoriesPositionsList) {
+        int range = originalSize;
+        for (Integer i : sponsoredStoriesPositionsListAdjusted) {
+
             for (Integer j = i; j < range; j++) {
                 tmpHashMap.put(j, originalPositionsList.get(j));
-   }
+            }
 
             for (Integer j = i; j < range; j++) {
                 originalPositionsList.put(j + 1, tmpHashMap.get(j));

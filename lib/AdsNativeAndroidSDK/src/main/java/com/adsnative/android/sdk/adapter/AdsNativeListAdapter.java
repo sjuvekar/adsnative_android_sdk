@@ -2,7 +2,6 @@ package com.adsnative.android.sdk.adapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,7 +19,7 @@ import java.util.List;
 public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     private final Context context;
-    private final T originalAdapter;
+    private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
     private List<SponsoredStory> sponsoredStories;
     private String adUnitId;
@@ -28,7 +27,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private SponsoredStoryController sponsoredStoryController;
     private AdapterView.OnItemClickListener onItemClickListener;
 
-    public AdsNativeListAdapter(Context context, T originalAdapter, /*int[]*/List<Integer> sponsoredStoriesPositions, String adUnitId) {
+    public AdsNativeListAdapter(Context context, T originalAdapter, List<Integer> sponsoredStoriesPositions, String adUnitId) {
         this.context = context;
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = sponsoredStoriesPositions;
@@ -51,14 +50,25 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     }
 
-    public void notifyDataSetChanged() {
-        this.sponsoredStoryController.clearPendingImpressions();
+    private void internalNotifyDataSetChanged(){
         this.positionControllerList.updateLists();
         super.notifyDataSetChanged();
     }
 
+    public void notifyDataSetChanged() {
+        this.positionControllerList.updateOriginalSize(this.originalAdapter.getCount());
+        internalNotifyDataSetChanged();
+    }
+
     public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
         return this.sponsoredStoryController.placeSponsoredStory(sponsoredStory, convertView, parent);
+    }
+
+    public void clearAds(){
+        this.sponsoredStories.clear();
+        this.sponsoredStoryController.clearAds();
+        this.positionControllerList.clearSponsoredStories();
+        internalNotifyDataSetChanged();
     }
 
     public void clearAd(View view) {
@@ -70,6 +80,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     }
 
     public void loadSponsoredStories() {
+        this.sponsoredStories.clear();
         if (sponsoredStoriesPositions.size() > 0) {
             for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
                 final int position = sponsoredStoriesPositions.get(i);
@@ -91,7 +102,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.sponsoredStories.add(sponsoredStory);
         if (i == sponsoredStoriesPositions.size() - 1) {
             this.positionControllerList.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
-            this.notifyDataSetChanged();
+            this.internalNotifyDataSetChanged();
         }
     }
 
@@ -129,21 +140,9 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         if (sponsoredStory == null) {
             int originalPosition = this.positionControllerList.getOriginalPosition(position);
             return this.originalAdapter.getView(originalPosition, convertView, parent);
-
         }
 
         return this.sponsoredStoryController.placeSponsoredStory(sponsoredStory, convertView, parent);
-    }
-
-    public AdapterView.OnItemClickListener createClickListener(final AdapterView.OnItemClickListener originalListener) {
-        this.onItemClickListener = originalListener;
-        return new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.d("TESTEST", "positionIsAd: " + AdsNativeListAdapter.this.positionControllerList.isAd(position));
-                if ((!AdsNativeListAdapter.this.positionControllerList.isAd(position)) && (originalListener != null))
-                    originalListener.onItemClick(adapterView, view, AdsNativeListAdapter.this.positionControllerList.getOriginalPosition(position), id);
-            }
-        };
     }
 }
 
