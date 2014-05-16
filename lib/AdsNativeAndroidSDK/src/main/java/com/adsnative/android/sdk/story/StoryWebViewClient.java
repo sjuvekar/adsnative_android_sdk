@@ -1,6 +1,7 @@
 package com.adsnative.android.sdk.story;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -9,6 +10,9 @@ import android.widget.ProgressBar;
 public class StoryWebViewClient extends WebViewClient {
 
     private ProgressBar progressBar;
+
+    public StoryWebViewClient() {
+    }
 
     public StoryWebViewClient(ProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -22,7 +26,9 @@ public class StoryWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        progressBar.setVisibility(View.GONE);
+        Log.d("TESTEST", "Page loaded");
+        if (progressBar != null)
+            progressBar.setVisibility(View.GONE);
     }
 
     @Override

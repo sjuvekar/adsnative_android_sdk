@@ -2,9 +2,12 @@ package com.adsnative.android.sdk.story;
 
 import android.graphics.Bitmap;
 
-public class SponsoredStoryData {
+import java.io.Serializable;
+
+public class SponsoredStoryData implements Serializable{
 
     private String title;
+    private String trackingTags;
     private String summary;
     private String url;
     private String type;
@@ -25,6 +28,14 @@ public class SponsoredStoryData {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTrackingTags() {
+        return trackingTags;
+    }
+
+    public void setTrackingTag(String trackingTags) {
+        this.trackingTags = trackingTags;
     }
 
     public String getSummary() {

@@ -37,7 +37,9 @@ public class GetSponsoredStoryRequest {
 
     public String get() {
         try {
-            return HttpRequest.get(getUrl()).body();
+            String body = HttpRequest.get(getUrl()).body();
+//            Log.d("TESTEST", body);
+            return body;
         } catch (HttpRequest.HttpRequestException exception) {
             return null;
         }

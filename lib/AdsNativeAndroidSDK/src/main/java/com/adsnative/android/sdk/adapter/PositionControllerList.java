@@ -86,6 +86,19 @@ public class PositionControllerList {
         adjustSponsoredStoriesPositionsList();
     }
 
+    public void insertSponsoredStory(SponsoredStory sponsoredStory, int position){
+        sponsoredStoriesList.add(sponsoredStory);
+        sponsoredStoriesPositionsList.add(position);
+        adjustSponsoredStoriesPositionsList(position);
+    }
+
+    private void adjustSponsoredStoriesPositionsList(int position){
+        mergedListSize++;
+        if (position > mergedListSize - 1)
+            position = mergedListSize - 1;
+        sponsoredStoriesPositionsListAdjusted.add(position);
+    }
+
     private void adjustSponsoredStoriesPositionsList() {
         this.sponsoredStoriesPositionsListAdjusted.clear();
         mergedListSize = originalSize;

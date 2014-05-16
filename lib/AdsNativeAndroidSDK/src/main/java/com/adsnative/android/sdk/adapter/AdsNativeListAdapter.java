@@ -14,6 +14,7 @@ import com.adsnative.android.sdk.story.SponsoredStory;
 import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
@@ -21,16 +22,23 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private final Context context;
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
+    private List<Integer> sponsoredStoriesPositionsLoaded;
     private List<SponsoredStory> sponsoredStories;
     private String adUnitId;
     private PositionControllerList positionControllerList;
     private SponsoredStoryController sponsoredStoryController;
     private AdapterView.OnItemClickListener onItemClickListener;
+    private boolean fetching;
 
-    public AdsNativeListAdapter(Context context, T originalAdapter, List<Integer> sponsoredStoriesPositions, String adUnitId) {
+    public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.context = context;
         this.originalAdapter = originalAdapter;
-        this.sponsoredStoriesPositions = sponsoredStoriesPositions;
+        this.sponsoredStoriesPositions = new ArrayList<Integer>();
+        this.sponsoredStoriesPositionsLoaded = new ArrayList<Integer>();
+        for (Integer i : sponsoredStoriesPositions) {
+            this.sponsoredStoriesPositions.add(i);
+        }
+        Collections.sort(this.sponsoredStoriesPositions);
         this.sponsoredStories = new ArrayList<SponsoredStory>();
         this.positionControllerList = new PositionControllerList(this.originalAdapter.getCount());
         this.sponsoredStoryController = new SponsoredStoryController(context, this.adUnitId);
@@ -47,7 +55,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 AdsNativeListAdapter.this.notifyDataSetInvalidated();
             }
         });
-
+        fetching = false;
     }
 
     private void internalNotifyDataSetChanged() {
@@ -60,23 +68,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         internalNotifyDataSetChanged();
     }
 
-    public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
-        return this.sponsoredStoryController.placeSponsoredStory(sponsoredStory, convertView, parent);
-    }
-
     public void clearAds() {
         this.sponsoredStories.clear();
         this.sponsoredStoryController.clearAds();
         this.positionControllerList.clearSponsoredStories();
         internalNotifyDataSetChanged();
-    }
-
-    public void clearAd(View view) {
-        this.sponsoredStoryController.clearAd(view);
-    }
-
-    public T getOriginalAdapter() {
-        return this.originalAdapter;
     }
 
     public void loadSponsoredStories() {
@@ -91,7 +87,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                     @Override
                     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
                         addSponsoredStory(sponsoredStory, position, j);
-
                     }
                 });
             }
@@ -104,6 +99,13 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
             this.positionControllerList.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
             this.internalNotifyDataSetChanged();
         }
+    }
+
+    private void addSponsoredStory(SponsoredStory sponsoredStory, int position){
+        this.sponsoredStories.add(sponsoredStory);
+        this.positionControllerList.insertSponsoredStory(sponsoredStory, position);
+        this.internalNotifyDataSetChanged();
+        fetching = false;
     }
 
     @Override
@@ -135,13 +137,36 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+//        if (this.sponsoredStoriesPositions.contains(position) && !fetching){
+//            if (!this.sponsoredStoriesPositionsLoaded.contains(position)){
+//                fetching = true;
+//                Log.d("TESTEST", "FetchingADD " + position);
+//                this.sponsoredStoriesPositionsLoaded.add(position);
+//                final int adPosition = position;
+//                final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId), context);
+//                sponsoredStory.loadRequest();
+//                sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
+//                    @Override
+//                    public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+//                        addSponsoredStory(sponsoredStory, adPosition);
+//                    }
+//                });
+//            }
+//        }
+
         SponsoredStory sponsoredStory = this.positionControllerList.getSponsoredStory(position);
         if (sponsoredStory == null) {
             int originalPosition = this.positionControllerList.getOriginalPosition(position);
             return this.originalAdapter.getView(originalPosition, convertView, parent);
         }
 
-        return this.sponsoredStoryController.placeSponsoredStory(sponsoredStory, convertView, parent);
+//        if (this.positionControllerList.isAd(position)) {
+//            Log.d("TESTEST", "add viewed " + position);
+            return this.sponsoredStoryController.placeSponsoredStory(this.positionControllerList.getSponsoredStory(position), convertView, parent, position);
+//        } else {
+//            int originalPosition = this.positionControllerList.getOriginalPosition(position);
+//            return this.originalAdapter.getView(originalPosition, convertView, parent);
+//        }
     }
 }
 
