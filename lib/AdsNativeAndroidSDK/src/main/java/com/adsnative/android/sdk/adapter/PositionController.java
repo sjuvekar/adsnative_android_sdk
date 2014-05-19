@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PositionControllerList {
+public class PositionController {
     private List<SponsoredStory> sponsoredStoriesList;
     private List<Integer> sponsoredStoriesPositionsList;
     private List<Integer> sponsoredStoriesPositionsListAdjusted;
@@ -14,7 +14,7 @@ public class PositionControllerList {
     private int originalSize;
     private int mergedListSize;
 
-    public PositionControllerList(int originalSize) {
+    public PositionController(int originalSize) {
         this.originalSize = originalSize;
         this.mergedListSize = originalSize;
         this.sponsoredStoriesList = new ArrayList<SponsoredStory>();
@@ -86,19 +86,6 @@ public class PositionControllerList {
         adjustSponsoredStoriesPositionsList();
     }
 
-    public void insertSponsoredStory(SponsoredStory sponsoredStory, int position){
-        sponsoredStoriesList.add(sponsoredStory);
-        sponsoredStoriesPositionsList.add(position);
-        adjustSponsoredStoriesPositionsList(position);
-    }
-
-    private void adjustSponsoredStoriesPositionsList(int position){
-        mergedListSize++;
-        if (position > mergedListSize - 1)
-            position = mergedListSize - 1;
-        sponsoredStoriesPositionsListAdjusted.add(position);
-    }
-
     private void adjustSponsoredStoriesPositionsList() {
         this.sponsoredStoriesPositionsListAdjusted.clear();
         mergedListSize = originalSize;
@@ -109,6 +96,20 @@ public class PositionControllerList {
             sponsoredStoriesPositionsListAdjusted.add(i);
         }
     }
+
+    public void insertSponsoredStory(SponsoredStory sponsoredStory, int position) {
+        sponsoredStoriesList.add(sponsoredStory);
+        sponsoredStoriesPositionsList.add(position);
+        adjustSponsoredStoriesPositionsList(position);
+    }
+
+    private void adjustSponsoredStoriesPositionsList(int position) {
+        mergedListSize++;
+        if (position > mergedListSize - 1)
+            position = mergedListSize - 1;
+        sponsoredStoriesPositionsListAdjusted.add(position);
+    }
+
 
     public void updateLists() {
         HashMap<Integer, Integer> tmpHashMap = new HashMap<Integer, Integer>();

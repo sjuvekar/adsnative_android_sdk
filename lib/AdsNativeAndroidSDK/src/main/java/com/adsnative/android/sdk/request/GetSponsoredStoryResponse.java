@@ -24,7 +24,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
                 JSONObject ad = data.getJSONObject("ad");
 
                 if (ad != null) {
-                    if (!ad.getString("trackingTags").isEmpty()){
+                    if (!ad.getString("trackingTags").isEmpty()) {
                         String trackingTags = ad.getString("trackingTags");
                         int length = trackingTags.length();
                         trackingTags = trackingTags.substring(10, length - 29);
@@ -54,9 +54,5 @@ public class GetSponsoredStoryResponse extends AdResponse {
             }
         }
         return null;
-    }
-
-    public SponsoredStoryData getStoryData() {
-        return storyData;
     }
 }

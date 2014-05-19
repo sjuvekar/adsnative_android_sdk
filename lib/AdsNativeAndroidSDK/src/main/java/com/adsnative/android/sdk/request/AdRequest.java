@@ -26,10 +26,6 @@ public class AdRequest {
         return adUnitID;
     }
 
-    public void setAdUnitID(String adUnitID) {
-        this.adUnitID = adUnitID;
-    }
-
     public boolean putKeyword(String keyword) {
         return keywords.add(keyword);
     }

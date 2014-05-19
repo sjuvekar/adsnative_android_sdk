@@ -3,7 +3,6 @@ package com.adsnative.android.sdk.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -27,18 +26,16 @@ public class SponsoredStoryController {
     private final Context context;
     private final SponsoredStoryClickListener sponsoredStoryClickListener;
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
-    private List<Integer> adImpressed;
-    private final String adUnitId;
+    private List<Integer> impressionsList;
 
-    public SponsoredStoryController(Context context, /*PositionController positionController,*/ String adUnitId) {
+    public SponsoredStoryController(Context context) {
         this.context = context;
-        this.adUnitId = adUnitId;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
-        this.adImpressed = new ArrayList<Integer>();
+        this.impressionsList = new ArrayList<Integer>();
     }
 
-    public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int position) {
+    public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, int position) {
 
         View view = convertView;
         if (view == null) {
@@ -49,17 +46,14 @@ public class SponsoredStoryController {
         SponsoredStory oldData = (SponsoredStory) this.sponsoredStoryWeakHashMap.get(view);
         if (oldData != newData) {
             sponsoredStoryWeakHashMap.put(view, newData);
-//            Log.d("TESTEST", "Sponsored story log impression ???/ ");
-//            startImpressionTimer()?
-            Log.d("TESTEST", "WEAKSSsize: " + sponsoredStoryWeakHashMap.size());
         }
 
         view.setOnClickListener(this.sponsoredStoryClickListener);
 
-        if (!adImpressed.contains(position)) {
+        if (!impressionsList.contains(position)) {
             if (!newData.getSponsoredStoryData().getTrackingTags().isEmpty())
                 ((RelativeLayout) view).addView(getWebView(sponsoredStory.getSponsoredStoryData()));
-            adImpressed.add(position);
+            impressionsList.add(position);
         }
 
         return view;
@@ -74,8 +68,6 @@ public class SponsoredStoryController {
     }
 
     private View getStoryView(SponsoredStoryData sponsoredStoryData) {
-
-        Log.d("TESTEST", "GetSponStoryVIEW");
 
         float density = context.getResources().getDisplayMetrics().density;
 

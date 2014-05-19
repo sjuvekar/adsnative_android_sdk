@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
@@ -22,26 +21,22 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private final Context context;
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
-    private List<Integer> sponsoredStoriesPositionsLoaded;
     private List<SponsoredStory> sponsoredStories;
     private String adUnitId;
-    private PositionControllerList positionControllerList;
+    private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
-    private AdapterView.OnItemClickListener onItemClickListener;
-    private boolean fetching;
 
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.context = context;
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = new ArrayList<Integer>();
-        this.sponsoredStoriesPositionsLoaded = new ArrayList<Integer>();
         for (Integer i : sponsoredStoriesPositions) {
             this.sponsoredStoriesPositions.add(i);
         }
         Collections.sort(this.sponsoredStoriesPositions);
         this.sponsoredStories = new ArrayList<SponsoredStory>();
-        this.positionControllerList = new PositionControllerList(this.originalAdapter.getCount());
-        this.sponsoredStoryController = new SponsoredStoryController(context, this.adUnitId);
+        this.positionController = new PositionController(this.originalAdapter.getCount());
+        this.sponsoredStoryController = new SponsoredStoryController(context);
         this.adUnitId = adUnitId;
 
         originalAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -55,23 +50,22 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 AdsNativeListAdapter.this.notifyDataSetInvalidated();
             }
         });
-        fetching = false;
     }
 
     private void internalNotifyDataSetChanged() {
-        this.positionControllerList.updateLists();
+        this.positionController.updateLists();
         super.notifyDataSetChanged();
     }
 
     public void notifyDataSetChanged() {
-        this.positionControllerList.updateOriginalSize(this.originalAdapter.getCount());
+        this.positionController.updateOriginalSize(this.originalAdapter.getCount());
         internalNotifyDataSetChanged();
     }
 
     public void clearAds() {
         this.sponsoredStories.clear();
         this.sponsoredStoryController.clearAds();
-        this.positionControllerList.clearSponsoredStories();
+        this.positionController.clearSponsoredStories();
         internalNotifyDataSetChanged();
     }
 
@@ -79,38 +73,36 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.sponsoredStories.clear();
         if (sponsoredStoriesPositions.size() > 0) {
             for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
-                final int position = sponsoredStoriesPositions.get(i);
                 final int j = i;
                 final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId), context);
                 sponsoredStory.loadRequest();
                 sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
                     @Override
                     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-                        addSponsoredStory(sponsoredStory, position, j);
+                        addSponsoredStory(sponsoredStory, j);
                     }
                 });
             }
         }
     }
 
-    private void addSponsoredStory(SponsoredStory sponsoredStory, int position, int i) {
+    private void addSponsoredStory(SponsoredStory sponsoredStory, int i) {
         this.sponsoredStories.add(sponsoredStory);
         if (i == sponsoredStoriesPositions.size() - 1) {
-            this.positionControllerList.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
+            this.positionController.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
             this.internalNotifyDataSetChanged();
         }
     }
 
-    private void addSponsoredStory(SponsoredStory sponsoredStory, int position){
+    private void addAsyncSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.sponsoredStories.add(sponsoredStory);
-        this.positionControllerList.insertSponsoredStory(sponsoredStory, position);
+        this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
-        fetching = false;
     }
 
     @Override
     public int getCount() {
-        return this.positionControllerList.getAdjustedCount();
+        return this.positionController.getAdjustedCount();
     }
 
     public int getViewTypeCount() {
@@ -118,55 +110,32 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     }
 
     public int getItemViewType(int position) {
-        return this.positionControllerList.isAd(position) ? 0 : this.originalAdapter.getItemViewType(this.positionControllerList.getOriginalPosition(position)) + 1;
+        return this.positionController.isAd(position) ? 0 : this.originalAdapter.getItemViewType(this.positionController.getOriginalPosition(position)) + 1;
     }
 
     @Override
     public Object getItem(int position) {
-        SponsoredStory sponsoredStory = this.positionControllerList.getSponsoredStory(position);
-        return sponsoredStory != null ? sponsoredStory : this.originalAdapter.getItem(this.positionControllerList.getOriginalPosition(position));
+        SponsoredStory sponsoredStory = this.positionController.getSponsoredStory(position);
+        return sponsoredStory != null ? sponsoredStory : this.originalAdapter.getItem(this.positionController.getOriginalPosition(position));
     }
 
     @Override
     public long getItemId(int position) {
-        if (this.positionControllerList.isAd(position))
+        if (this.positionController.isAd(position))
             return -1;
         else
-            return this.positionControllerList.getOriginalPosition(position);
+            return this.positionController.getOriginalPosition(position);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        if (this.sponsoredStoriesPositions.contains(position) && !fetching){
-//            if (!this.sponsoredStoriesPositionsLoaded.contains(position)){
-//                fetching = true;
-//                Log.d("TESTEST", "FetchingADD " + position);
-//                this.sponsoredStoriesPositionsLoaded.add(position);
-//                final int adPosition = position;
-//                final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId), context);
-//                sponsoredStory.loadRequest();
-//                sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
-//                    @Override
-//                    public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-//                        addSponsoredStory(sponsoredStory, adPosition);
-//                    }
-//                });
-//            }
-//        }
 
-        SponsoredStory sponsoredStory = this.positionControllerList.getSponsoredStory(position);
+        SponsoredStory sponsoredStory = this.positionController.getSponsoredStory(position);
         if (sponsoredStory == null) {
-            int originalPosition = this.positionControllerList.getOriginalPosition(position);
+            int originalPosition = this.positionController.getOriginalPosition(position);
             return this.originalAdapter.getView(originalPosition, convertView, parent);
         }
-
-//        if (this.positionControllerList.isAd(position)) {
-//            Log.d("TESTEST", "add viewed " + position);
-            return this.sponsoredStoryController.placeSponsoredStory(this.positionControllerList.getSponsoredStory(position), convertView, parent, position);
-//        } else {
-//            int originalPosition = this.positionControllerList.getOriginalPosition(position);
-//            return this.originalAdapter.getView(originalPosition, convertView, parent);
-//        }
+        return this.sponsoredStoryController.placeSponsoredStory(this.positionController.getSponsoredStory(position), convertView, position);
     }
 }
 

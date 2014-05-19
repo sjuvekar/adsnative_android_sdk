@@ -73,7 +73,8 @@ public class WebViewActivity extends Activity {
 
         private String creativeId;
         private String sessionId;
-        public LogTime(String creativeId, String sessionId){
+
+        public LogTime(String creativeId, String sessionId) {
             this.creativeId = creativeId;
             this.sessionId = sessionId;
         }

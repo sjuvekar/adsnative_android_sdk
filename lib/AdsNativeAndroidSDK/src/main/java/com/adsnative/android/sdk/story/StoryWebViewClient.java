@@ -1,7 +1,6 @@
 package com.adsnative.android.sdk.story;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -26,7 +25,6 @@ public class StoryWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        Log.d("TESTEST", "Page loaded");
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
     }

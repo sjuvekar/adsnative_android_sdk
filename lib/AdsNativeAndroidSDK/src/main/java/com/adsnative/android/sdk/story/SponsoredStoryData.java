@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
-public class SponsoredStoryData implements Serializable{
+public class SponsoredStoryData implements Serializable {
 
     private String title;
     private String trackingTags;
