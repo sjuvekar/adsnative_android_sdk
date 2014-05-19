@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.adsnative.android.sdk.adapter.AdsNativeListAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.NewsAdapter;
 import com.adsnative.android.sdk.sampleapp.item.NewsItem;
+import com.adsnative.android.sdk.sampleapp.util.Constants;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
 
 import org.json.JSONArray;
@@ -48,7 +49,7 @@ public class NewsActivity extends ListActivity {
 
         newsItems = new ArrayList<NewsItem>();
 
-        new GetNews(){
+        new GetNews() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -82,11 +83,8 @@ public class NewsActivity extends ListActivity {
     protected void setItems(List<NewsItem> items) {
         newsItems = items;
         NewsAdapter newsAdapter = new NewsAdapter(NewsActivity.this, R.layout.news_list_item, newsItems);
-        List<Integer> adPositions = new ArrayList<Integer>();
-        adPositions.add(2);
-        adPositions.add(7);
-        adPositions.add(100);
-        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), newsAdapter, adPositions, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+        int[] sponsoredStoryPositions = {1, 5, 14, 65};
+        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), newsAdapter, sponsoredStoryPositions, Constants.AD_UNIT_ID);
         setListAdapter(adsNativeListAdapter);
         adsNativeListAdapter.loadSponsoredStories();
     }
