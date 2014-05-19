@@ -38,7 +38,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.positionController = new PositionController(this.originalAdapter.getCount());
         this.sponsoredStoryController = new SponsoredStoryController(context);
         this.adUnitId = adUnitId;
-
         originalAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -73,20 +72,21 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.sponsoredStories.clear();
         if (sponsoredStoriesPositions.size() > 0) {
             for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
-                final int j = i;
+                final int position = sponsoredStoriesPositions.get(i);
                 final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId), context);
                 sponsoredStory.loadRequest();
                 sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
                     @Override
                     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-                        addSponsoredStory(sponsoredStory, j);
+//                        addSponsoredStories(sponsoredStory, i);
+                        addSponsoredStory(sponsoredStory, position);
                     }
                 });
             }
         }
     }
 
-    private void addSponsoredStory(SponsoredStory sponsoredStory, int i) {
+    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
         this.sponsoredStories.add(sponsoredStory);
         if (i == sponsoredStoriesPositions.size() - 1) {
             this.positionController.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
@@ -94,7 +94,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         }
     }
 
-    private void addAsyncSponsoredStory(SponsoredStory sponsoredStory, int position) {
+    private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.sponsoredStories.add(sponsoredStory);
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
