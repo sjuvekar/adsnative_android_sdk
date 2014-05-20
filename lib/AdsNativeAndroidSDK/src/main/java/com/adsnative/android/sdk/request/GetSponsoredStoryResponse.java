@@ -28,10 +28,11 @@ public class GetSponsoredStoryResponse extends AdResponse {
                         String trackingTags = ad.getString("trackingTags");
                         int length = trackingTags.length();
                         trackingTags = trackingTags.substring(10, length - 29);
-                        storyData.setTrackingTag(trackingTags);
+                        storyData.setTrackingTags(trackingTags);
                     } else {
-                        storyData.setTrackingTag("");
+                        storyData.setTrackingTags("");
                     }
+                    storyData.setBackgroundColor(ad.getString("backgroundColor"));
                     storyData.setUrl(ad.getString("url"));
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));

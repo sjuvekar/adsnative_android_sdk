@@ -105,27 +105,30 @@ public class PositionController {
 
     private void adjustSponsoredStoriesPositionsList(int position) {
         mergedListSize++;
-        if (position > mergedListSize - 1)
+        if (position > mergedListSize - 1) {
             position = mergedListSize - 1;
+        }
         sponsoredStoriesPositionsListAdjusted.add(position);
     }
 
 
     public void updateLists() {
         HashMap<Integer, Integer> tmpHashMap = new HashMap<Integer, Integer>();
-        int range = originalSize;
+        int range = mergedListSize - 1;
         for (Integer i : sponsoredStoriesPositionsListAdjusted) {
 
-            for (Integer j = i; j < range; j++) {
-                tmpHashMap.put(j, originalPositionsList.get(j));
-            }
+            if (originalPositionsList.containsKey(i)) {
+                for (Integer j = i; j < range; j++) {
+                    tmpHashMap.put(j, originalPositionsList.get(j));
+                }
 
-            for (Integer j = i; j < range; j++) {
-                originalPositionsList.put(j + 1, tmpHashMap.get(j));
-            }
+                for (Integer j = i; j < range; j++) {
+                    originalPositionsList.put(j + 1, tmpHashMap.get(j));
+                }
 
-            originalPositionsList.remove(i);
-            range++;
+                originalPositionsList.remove(i);
+                range++;
+            }
         }
     }
 }
