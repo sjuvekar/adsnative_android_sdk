@@ -82,7 +82,12 @@ public class SponsoredStory {
                 SponsoredStoryData sponsoredStoryData = null;
                 try {
                     sponsoredStoryData = new GetSponsoredStoryResponse(json).parseJson();
-                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL("http:" + sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream()));
+                    String url;
+                    if (sponsoredStoryData.getThumbnailUrl().startsWith("http:"))
+                        url = sponsoredStoryData.getThumbnailUrl();
+                    else
+                        url = "http:" + sponsoredStoryData.getThumbnailUrl();
+                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream()));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
@@ -99,8 +104,10 @@ public class SponsoredStory {
         @Override
         protected void onPostExecute(SponsoredStoryData sponsoredStoryData) {
             super.onPostExecute(sponsoredStoryData);
-            setSponsoredStoryData(sponsoredStoryData);
-            onSponsoredStoryListener.onSponsoredStoryData(sponsoredStoryData);
+            if (sponsoredStoryData != null) {
+                setSponsoredStoryData(sponsoredStoryData);
+                onSponsoredStoryListener.onSponsoredStoryData(sponsoredStoryData);
+            }
         }
     }
 }
