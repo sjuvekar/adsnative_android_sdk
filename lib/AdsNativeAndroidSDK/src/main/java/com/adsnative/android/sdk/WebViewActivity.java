@@ -27,7 +27,7 @@ public class WebViewActivity extends Activity {
     private long endTime;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -81,7 +81,7 @@ public class WebViewActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Long... params) {
-            return new LogTimeRequest(params[0], creativeId, sessionId).postLoggedTime();
+            return new LogTimeRequest(params[0], creativeId, sessionId).logTime();
         }
 
         @Override

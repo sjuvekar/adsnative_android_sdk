@@ -1,5 +1,7 @@
 package com.adsnative.android.sdk.request;
 
+import android.util.Log;
+
 import com.adsnative.android.sdk.Constants;
 import com.adsnative.android.sdk.device.DeviceInfo;
 import com.github.kevinsawicki.http.HttpRequest;
@@ -39,6 +41,7 @@ public class GetSponsoredStoryRequest {
         try {
             return HttpRequest.get(getUrl()).body();
         } catch (HttpRequest.HttpRequestException exception) {
+            Log.e(Constants.ERROR_TAG, exception.getMessage());
             return null;
         }
     }

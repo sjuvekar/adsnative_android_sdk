@@ -1,5 +1,9 @@
 package com.adsnative.android.sdk.request;
 
+import android.util.Log;
+
+import com.adsnative.android.sdk.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +18,7 @@ public class AdResponse {
         try {
             this.status = data.getString("status");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(Constants.ERROR_TAG, e.getMessage());
         }
     }
 
