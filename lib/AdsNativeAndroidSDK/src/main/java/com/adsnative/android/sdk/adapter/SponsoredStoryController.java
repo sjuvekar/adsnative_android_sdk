@@ -139,9 +139,6 @@ public class SponsoredStoryController {
         @Override
         public void onClick(View v) {
             SponsoredStory sponsoredStory = sponsoredStoryWeakHashMap.get(v);
-            //Open in Browser
-//            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setData(Uri.parse(url));
             Intent intent = new Intent(context, WebViewActivity.class);
             intent.putExtra("crid", sponsoredStory.getSponsoredStoryData().getCreativeId());
             intent.putExtra("sid", sponsoredStory.getSponsoredStoryData().getSessionId());
