@@ -9,6 +9,7 @@ public class SponsoredStoryData implements Serializable {
     private String title;
     private String trackingTags;
     private String summary;
+    private String backgroundColor;
     private String url;
     private String type;
     private String promotedBy;
@@ -34,7 +35,7 @@ public class SponsoredStoryData implements Serializable {
         return trackingTags;
     }
 
-    public void setTrackingTag(String trackingTags) {
+    public void setTrackingTags(String trackingTags) {
         this.trackingTags = trackingTags;
     }
 
@@ -44,6 +45,14 @@ public class SponsoredStoryData implements Serializable {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public String getUrl() {

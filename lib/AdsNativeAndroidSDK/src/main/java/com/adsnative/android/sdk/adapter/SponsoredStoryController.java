@@ -110,7 +110,7 @@ public class SponsoredStoryController {
         textLayout.addView(byLine);
 
         linearLayout.addView(textLayout);
-        linearLayout.setBackgroundColor(Color.parseColor("#fcf5da"));
+        linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
         relativeLayout.addView(linearLayout);
 
         return relativeLayout;
