@@ -78,7 +78,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
                     @Override
                     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-//                        addSponsoredStories(sponsoredStory, i);
                         addSponsoredStory(sponsoredStory, position);
                     }
                 });
