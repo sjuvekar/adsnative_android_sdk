@@ -23,7 +23,7 @@ public class GetSponsoredStoryRequestTest {
 
     @Before
     public void setup() {
-        adRequest = new AdRequest("12345");
+        adRequest = new AdRequest("Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
 
         context = Robolectric.getShadowApplication().getApplicationContext();
         DeviceInfo deviceInfo = new DeviceInfo(context);

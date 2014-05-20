@@ -17,4 +17,8 @@ public class AdResponse {
             e.printStackTrace();
         }
     }
+
+    public String getStatus(){
+        return this.status;
+    }
 }

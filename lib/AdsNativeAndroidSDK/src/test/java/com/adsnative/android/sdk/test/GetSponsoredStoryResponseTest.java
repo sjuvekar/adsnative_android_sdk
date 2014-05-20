@@ -53,4 +53,10 @@ public class GetSponsoredStoryResponseTest {
     public void testParseJson(){
             Assert.assertNotNull(getSponsoredStoryResponse.parseJson());
     }
+
+    @Test
+    public void testStatus(){
+        Assert.assertEquals("OK", getSponsoredStoryResponse.getStatus());
+    }
+
 }
