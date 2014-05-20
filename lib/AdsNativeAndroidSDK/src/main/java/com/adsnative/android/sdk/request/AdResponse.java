@@ -22,7 +22,7 @@ public class AdResponse {
         }
     }
 
-    public String getStatus(){
+    public String getStatus() {
         return this.status;
     }
 }

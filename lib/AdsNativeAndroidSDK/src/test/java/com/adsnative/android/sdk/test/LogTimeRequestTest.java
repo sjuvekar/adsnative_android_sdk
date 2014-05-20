@@ -23,7 +23,7 @@ public class LogTimeRequestTest {
     }
 
     @Test
-    public void testLogTime(){
+    public void testTime(){
         Assert.assertEquals(200, logTimeRequest.logTime());
     }
 }
