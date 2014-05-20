@@ -3,7 +3,9 @@ package com.adsnative.android.sdk.story;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.adsnative.android.sdk.Constants;
 import com.adsnative.android.sdk.device.DeviceInfo;
 import com.adsnative.android.sdk.device.GetAdvertisingId;
 import com.adsnative.android.sdk.request.AdRequest;
@@ -89,11 +91,14 @@ public class SponsoredStory {
                         url = "http:" + sponsoredStoryData.getThumbnailUrl();
                     sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream()));
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(Constants.ERROR_TAG, e.getMessage());
+                    return null;
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    Log.e(Constants.ERROR_TAG, e.getMessage());
+                    return null;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(Constants.ERROR_TAG, e.getMessage());
+                    return null;
                 }
                 return sponsoredStoryData;
             }

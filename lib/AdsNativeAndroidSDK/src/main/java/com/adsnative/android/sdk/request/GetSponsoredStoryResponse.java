@@ -1,5 +1,8 @@
 package com.adsnative.android.sdk.request;
 
+import android.util.Log;
+
+import com.adsnative.android.sdk.Constants;
 import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONException;
@@ -51,7 +54,8 @@ public class GetSponsoredStoryResponse extends AdResponse {
 
                 return storyData;
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(Constants.ERROR_TAG, e.getMessage());
+                return null;
             }
         }
         return null;

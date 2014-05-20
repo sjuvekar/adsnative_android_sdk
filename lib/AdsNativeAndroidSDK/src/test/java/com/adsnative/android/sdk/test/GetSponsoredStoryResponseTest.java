@@ -1,6 +1,9 @@
 package com.adsnative.android.sdk.test;
 
 
+import android.util.Log;
+
+import com.adsnative.android.sdk.Constants;
 import com.adsnative.android.sdk.request.GetSponsoredStoryResponse;
 
 import junit.framework.Assert;
@@ -45,7 +48,7 @@ public class GetSponsoredStoryResponseTest {
         try {
             getSponsoredStoryResponse = new GetSponsoredStoryResponse(json);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(Constants.ERROR_TAG, e.getMessage());
         }
     }
 
@@ -53,4 +56,10 @@ public class GetSponsoredStoryResponseTest {
     public void testParseJson(){
             Assert.assertNotNull(getSponsoredStoryResponse.parseJson());
     }
+
+    @Test
+    public void testStatus(){
+        Assert.assertEquals("OK", getSponsoredStoryResponse.getStatus());
+    }
+
 }
