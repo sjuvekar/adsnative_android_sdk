@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.adsnative.android.sdk.adapter.AdsNativeListAdapter;
 import com.adsnative.android.sdk.sampleapp.adapter.YouTubeAdapter;
 import com.adsnative.android.sdk.sampleapp.item.YouTubeItem;
+import com.adsnative.android.sdk.sampleapp.util.Constants;
 import com.adsnative.android.sdk.sampleapp.util.ServiceHandler;
 
 import org.json.JSONArray;
@@ -85,11 +86,8 @@ public class YouTubeActivity extends ListActivity {
     protected void setItems(List<YouTubeItem> items) {
         youTubeItems = items;
         YouTubeAdapter youTubeAdapter = new YouTubeAdapter(YouTubeActivity.this, R.layout.youtube_list_item, youTubeItems);
-        List<Integer> adPositions = new ArrayList<Integer>();
-        adPositions.add(2);
-        adPositions.add(6);
-        adPositions.add(25);
-        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), youTubeAdapter, adPositions, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+        int[] sponsoredStoryPositions = {2, 6, 45, 69};
+        AdsNativeListAdapter adsNativeListAdapter = new AdsNativeListAdapter(getBaseContext(), youTubeAdapter, sponsoredStoryPositions, Constants.AD_UNIT_ID);
         setListAdapter(adsNativeListAdapter);
         adsNativeListAdapter.loadSponsoredStories();
     }
