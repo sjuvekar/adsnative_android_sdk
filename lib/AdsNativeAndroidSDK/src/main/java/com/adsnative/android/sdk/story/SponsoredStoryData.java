@@ -4,6 +4,10 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
+/**
+ * Container class for SponsoredStory data fetched from server
+ */
+
 public class SponsoredStoryData implements Serializable {
 
     private String title;

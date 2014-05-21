@@ -17,6 +17,10 @@ import com.adsnative.android.sdk.story.StoryWebViewClient;
 
 import java.util.Calendar;
 
+/**
+ * Activity for displaying WebView and log time after clicking the ad.
+ */
+
 public class WebViewActivity extends Activity {
 
     private WebView webView;
@@ -56,12 +60,19 @@ public class WebViewActivity extends Activity {
         webView.loadUrl(url);
     }
 
+    /**
+     * Get time when Activity starts
+     */
     @Override
     protected void onResume() {
         super.onResume();
         startTime = Calendar.getInstance().getTimeInMillis();
     }
 
+    /**
+     * Get time when Activity is no longer visible and log time to server using
+     * {@link com.adsnative.android.sdk.WebViewActivity.LogTime} Task
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -69,6 +80,9 @@ public class WebViewActivity extends Activity {
         new LogTime(creativeId, sessionId).execute(endTime - startTime);
     }
 
+    /**
+     * Background task for logging time to server. execute @param is amount of time to be logged
+     */
     private class LogTime extends AsyncTask<Long, Void, Integer> {
 
         private String creativeId;

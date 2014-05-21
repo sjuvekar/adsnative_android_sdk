@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
+/**
+ * Controller and renderer of the SponsoredStories attached to ListView
+ */
 public class SponsoredStoryController {
 
     private final Context context;
@@ -28,6 +31,11 @@ public class SponsoredStoryController {
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private List<Integer> impressionsList;
 
+    /**
+     * Constructor
+     *
+     * @param context
+     */
     public SponsoredStoryController(Context context) {
         this.context = context;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
@@ -35,6 +43,15 @@ public class SponsoredStoryController {
         this.impressionsList = new ArrayList<Integer>();
     }
 
+    /**
+     * Uses getStoryView(SponsoredStoryData) to render proper layout of SponsoredStory.
+     * Maps SponsoredStories to its proper Views. Sets SponsoredStory click listener
+     * and log impression by display 1x1 drop pixel.
+     * @param sponsoredStory
+     * @param convertView if is {@code null} proper layout will be rendered for View
+     * @param position
+     * @return fully functional SponsoredStory View
+     */
     public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, int position) {
 
         View view = convertView;
@@ -59,6 +76,12 @@ public class SponsoredStoryController {
         return view;
     }
 
+    /**
+     * Provides 1x1 drop pixel WebView
+     *
+     * @param sponsoredStoryData
+     * @return created 1x1 size WebView
+     */
     private View getWebView(SponsoredStoryData sponsoredStoryData) {
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
@@ -67,6 +90,12 @@ public class SponsoredStoryController {
         return webView;
     }
 
+    /**
+     * Renders proper View for specified SponsoredStoryData
+     *
+     * @param sponsoredStoryData
+     * @return rendered View
+     */
     private View getStoryView(SponsoredStoryData sponsoredStoryData) {
 
         float density = context.getResources().getDisplayMetrics().density;
@@ -117,25 +146,23 @@ public class SponsoredStoryController {
 
     }
 
+    /**
+     * Clears all SponsoredStory mappings
+     */
     public void clearAds() {
         this.sponsoredStoryWeakHashMap.clear();
     }
 
-    public void clearAd(View view) {
-        if (view == null)
-            return;
-
-        SponsoredStory sponsoredStory = (SponsoredStory) this.sponsoredStoryWeakHashMap.get(view);
-        if (sponsoredStory != null) {
-            this.sponsoredStoryWeakHashMap.remove(view);
-        }
-
-        view.setOnClickListener(null);
-        view.setOnLongClickListener(null);
-    }
-
+    /**
+     * Click listener for SponsoredStory Views
+     */
     private final class SponsoredStoryClickListener implements View.OnClickListener {
 
+        /**
+         * Open proper WebView and starts {@link com.adsnative.android.sdk.WebViewActivity}
+         * for SponsoredStory attached to  after the click action was performed
+         * @param v
+         */
         @Override
         public void onClick(View v) {
             SponsoredStory sponsoredStory = sponsoredStoryWeakHashMap.get(v);

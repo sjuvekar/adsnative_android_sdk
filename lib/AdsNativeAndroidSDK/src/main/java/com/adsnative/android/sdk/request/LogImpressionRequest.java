@@ -5,9 +5,8 @@ import android.util.Log;
 import com.adsnative.android.sdk.Constants;
 import com.github.kevinsawicki.http.HttpRequest;
 
-/*
-I don't know if this class is necessary while we're using 1x1 drop pixel to log impressions...
-by Mieszko
+/**
+ * I don't know if this class is necessary while we're using 1x1 drop pixel to log impressions...
  */
 
 public class LogImpressionRequest {

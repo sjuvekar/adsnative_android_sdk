@@ -8,15 +8,30 @@ import com.adsnative.android.sdk.story.SponsoredStoryData;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Handles and parse response from get operation requested on API
+ */
 public class GetSponsoredStoryResponse extends AdResponse {
 
     private int count;
     private SponsoredStoryData storyData;
 
+    /**
+     * Constructor
+     *
+     * @param rawData - body of the response
+     * @throws JSONException
+     */
     public GetSponsoredStoryResponse(String rawData) throws JSONException {
         super(new JSONObject(rawData));
     }
 
+    /**
+     * Parses JSON data from response
+     *
+     * @return {@link com.adsnative.android.sdk.story.SponsoredStoryData} object with parsed data from response,
+     * if something went wrong with parsing returns {@code null}
+     */
     public SponsoredStoryData parseJson() {
         if (status.equals("OK")) {
             try {

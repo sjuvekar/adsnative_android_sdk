@@ -11,10 +11,21 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
 
+/**
+ * Class fetches Advertising Id of the user.
+ * It extends AsyncTask because Advertising Id can't be fetched on UI thread and
+ * have to be run in the background.
+ */
+
 public class GetAdvertisingId extends AsyncTask<Void, Void, String> {
 
     private Context context;
 
+    /**
+     * Constructor of GetAdvertisingID class
+     *
+     * @param context
+     */
     public GetAdvertisingId(Context context) {
         this.context = context;
     }
