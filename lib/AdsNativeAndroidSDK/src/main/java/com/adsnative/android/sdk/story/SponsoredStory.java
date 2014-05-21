@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
+/**
+ * Class handles fetching sponsored story and stores all data of sponsored story, IDs and device info
+ */
 public class SponsoredStory {
 
     private String uuid;
@@ -28,12 +30,21 @@ public class SponsoredStory {
     private DeviceInfo deviceInfo;
     private OnSponsoredStoryListener onSponsoredStoryListener;
 
+    /**
+     * Constructor
+     *
+     * @param adRequest with AdUnitId
+     * @param context
+     */
     public SponsoredStory(AdRequest adRequest, Context context) {
         this.adRequest = adRequest;
         this.context = context;
         this.deviceInfo = new DeviceInfo(context);
     }
 
+    /**
+     * Fetches AdvertisingId from device and after that starts task that fetches sponsored story
+     */
     public void loadRequest() {
         new GetAdvertisingId(context) {
             @Override
@@ -49,22 +60,48 @@ public class SponsoredStory {
         }.execute();
     }
 
+    /**
+     * Uuid setter
+     *
+     * @param uuid
+     */
     private void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
+    /**
+     * Sponsored story data setter
+     *
+     * @param sponsoredStoryData
+     */
     private void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
         this.sponsoredStoryData = sponsoredStoryData;
     }
 
+    /**
+     * Sponsored story data getter
+     *
+     * @return this sponsoredStoryData object
+     */
     public SponsoredStoryData getSponsoredStoryData() {
-        return sponsoredStoryData;
+        return this.sponsoredStoryData;
     }
 
+    /**
+     * Sets SponsoredStoryListener to know when the story is completely fetched and parsed
+     *
+     * @param onSponsoredStoryListener
+     */
     public void setOnSponsoredStoryListener(OnSponsoredStoryListener onSponsoredStoryListener) {
         this.onSponsoredStoryListener = onSponsoredStoryListener;
     }
 
+    /**
+     * Fetching SponsoredStory task.
+     * Triggers onSponsoredStoryData from {@link com.adsnative.android.sdk.story.OnSponsoredStoryListener}
+     * if SponsoredStory is completely fetched and data is correctly parsed. If SponsoredStoryData is null
+     * nth is going to be triggered.
+     */
     private class GetSponsoredStoryTask extends AsyncTask<String, Void, SponsoredStoryData> {
 
         private AdRequest adRequest;

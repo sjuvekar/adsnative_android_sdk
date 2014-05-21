@@ -50,7 +50,7 @@ public class PositionControllerTest {
         List<Integer> integers = new ArrayList<Integer>();
         integers.add(8);
         integers.add(15);
-        positionController.insertSponsoredStories(sponsoredStories, integers);
+        positionController.replaceSponsoredStories(sponsoredStories, integers);
         positionController.updateLists();
         Assert.assertEquals(12, positionController.getAdjustedCount());
     }

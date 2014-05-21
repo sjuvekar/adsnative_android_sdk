@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Adapter for ListView for proper displaying SponsoredStories
+ * @param <T>
+ */
 public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     private final Context context;
@@ -26,6 +30,15 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
 
+    /**
+     * Constructor initializes properties and converts table of integers into List and sorts it in
+     * ascending way. It also registers data observer for original adapter.
+     *
+     * @param context
+     * @param originalAdapter
+     * @param sponsoredStoriesPositions
+     * @param adUnitId
+     */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.context = context;
         this.originalAdapter = originalAdapter;
@@ -51,16 +64,26 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         });
     }
 
+    /**
+     * Updates positions of items of the list and notifies ListView about it.
+     */
     private void internalNotifyDataSetChanged() {
         this.positionController.updateLists();
         super.notifyDataSetChanged();
     }
 
+    /**
+     * Triggered when data changes in originalAdapter and there was call of .notifyDataSetChanged() on
+     * original adapter. It also updates original data in AdsNativeListAdapter.positionController.
+     */
     public void notifyDataSetChanged() {
         this.positionController.updateOriginalSize(this.originalAdapter.getCount());
         internalNotifyDataSetChanged();
     }
 
+    /**
+     * Clears all Ads attached to ListView
+     */
     public void clearAds() {
         this.sponsoredStories.clear();
         this.sponsoredStoryController.clearAds();
@@ -68,6 +91,10 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         internalNotifyDataSetChanged();
     }
 
+    /**
+     * Fetches and loads SponsoredStories to positions specified by Constructor.
+     * Sponsored stories are loaded asynchronously into ListView.
+     */
     public void loadSponsoredStories() {
         this.sponsoredStories.clear();
         if (sponsoredStoriesPositions.size() > 0) {
@@ -85,39 +112,81 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         }
     }
 
-    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
-        this.sponsoredStories.add(sponsoredStory);
-        if (i == sponsoredStoriesPositions.size() - 1) {
-            this.positionController.insertSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
-            this.internalNotifyDataSetChanged();
-        }
-    }
-
+    /**
+     * Adds SponsoredStory into specified position
+     *
+     * @param sponsoredStory
+     * @param position
+     */
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.sponsoredStories.add(sponsoredStory);
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
     }
 
+    /**
+     * Adds/replaces SponsoredStories when all of the them are fetched.
+     *
+     * @param sponsoredStory
+     * @param i
+     */
+    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
+        this.sponsoredStories.add(sponsoredStory);
+        if (i == sponsoredStoriesPositions.size() - 1) {
+            this.clearAds();
+            this.positionController.replaceSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
+            this.internalNotifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Returns the size of the whole list attached to ListView.
+     *
+     * @return the size of the whole list attached ListView
+     */
     @Override
     public int getCount() {
         return this.positionController.getAdjustedCount();
     }
 
+    /**
+     * Returns the amount of the object types included into ListView.
+     *
+     * @return the amount of the object types included into ListView
+     */
     public int getViewTypeCount() {
         return this.originalAdapter.getViewTypeCount() + 1;
     }
 
+    /**
+     * Gets code of the object type at specified position of the ListView.
+     * The type code of SponsoredStory is '0'.
+     *
+     * @param position of the object
+     * @return code of the object type at position.
+     */
     public int getItemViewType(int position) {
         return this.positionController.isAd(position) ? 0 : this.originalAdapter.getItemViewType(this.positionController.getOriginalPosition(position)) + 1;
     }
 
+    /**
+     * Gets the object at specified position of the ListView.
+     *
+     * @param position of the object
+     * @return object at position of the ListView.
+     */
     @Override
     public Object getItem(int position) {
         SponsoredStory sponsoredStory = this.positionController.getSponsoredStory(position);
         return sponsoredStory != null ? sponsoredStory : this.originalAdapter.getItem(this.positionController.getOriginalPosition(position));
     }
 
+    /**
+     * Gets id of the ListView item at specified position.
+     *
+     * @param position of the object
+     * @return {@value -1} if there is SponsoredStory at position, otherwise returns mapped position of the original item
+     */
     @Override
     public long getItemId(int position) {
         if (this.positionController.isAd(position))
@@ -126,6 +195,14 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
             return this.positionController.getOriginalPosition(position);
     }
 
+    /**
+     * Provides View to be displayed at specified position.
+     *
+     * @param position of the View
+     * @param convertView
+     * @param parent
+     * @return View to be displayed at specified position
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

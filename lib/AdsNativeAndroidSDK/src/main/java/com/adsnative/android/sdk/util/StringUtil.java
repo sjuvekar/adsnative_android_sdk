@@ -1,5 +1,8 @@
 package com.adsnative.android.sdk.util;
 
+/**
+ * Util class for capitalizing strings
+ */
 public class StringUtil {
     public String capitalize(String s) {
         if (s == null || s.length() == 0) {
