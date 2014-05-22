@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
-import com.adsnative.android.sdk.request.AdRequest;
-import com.adsnative.android.sdk.story.OnSponsoredStoryListener;
+import com.adsnative.android.sdk.story.OnSponsoredStoryDataListener;
 import com.adsnative.android.sdk.story.SponsoredStory;
+import com.adsnative.android.sdk.story.SponsoredStoryController;
 import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import java.util.ArrayList;
@@ -119,8 +119,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * Clears all Ads attached to ListView
      */
     public void clearAds() {
-        this.sponsoredStories.clear();
-        this.sponsoredStoryController.clearAds();
+        this.sponsoredStoryController.clearSponsoredStories();
         this.positionController.clearSponsoredStories();
         internalNotifyDataSetChanged();
     }
@@ -130,13 +129,12 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * Sponsored stories are loaded asynchronously into ListView.
      */
     public void loadSponsoredStories() {
-        this.sponsoredStories.clear();
+        this.sponsoredStoryController.clearSponsoredStories();
         if (sponsoredStoriesPositions.size() > 0) {
             for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
                 final int position = sponsoredStoriesPositions.get(i);
-                final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId, adRequestKeywords), context);
-                sponsoredStory.loadRequest();
-                sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
+                final SponsoredStory sponsoredStory = sponsoredStoryController.fetchSponsoredStory(adUnitId, adRequestKeywords);
+                sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
                     @Override
                     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
                         addSponsoredStory(sponsoredStory, position);
@@ -153,25 +151,9 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * @param position
      */
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
-        this.sponsoredStories.add(sponsoredStory);
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
     }
-
-    /**
-     * Adds/replaces SponsoredStories when all of the them are fetched.
-     *
-     * @param sponsoredStory
-     * @param i
-     */
-//    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
-//        this.sponsoredStories.add(sponsoredStory);
-//        if (i == sponsoredStoriesPositions.size() - 1) {
-//            this.clearAds();
-//            this.positionController.replaceSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
-//            this.internalNotifyDataSetChanged();
-//        }
-//    }
 
     /**
      * Returns the size of the whole list attached to ListView.
@@ -245,7 +227,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
             int originalPosition = this.positionController.getOriginalPosition(position);
             return this.originalAdapter.getView(originalPosition, convertView, parent);
         }
-        return this.sponsoredStoryController.placeSponsoredStory(this.positionController.getSponsoredStory(position), convertView, position);
+        return this.sponsoredStoryController.getSponsoredStoryView(this.positionController.getSponsoredStory(position), convertView, position);
     }
 }
 

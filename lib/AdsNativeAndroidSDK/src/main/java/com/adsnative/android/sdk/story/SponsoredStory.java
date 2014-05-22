@@ -29,7 +29,7 @@ public class SponsoredStory {
     private AdRequest adRequest;
     private Context context;
     private DeviceInfo deviceInfo;
-    private OnSponsoredStoryListener onSponsoredStoryListener;
+    private OnSponsoredStoryDataListener onSponsoredStoryDataListener;
 
     /**
      * Constructor
@@ -95,17 +95,17 @@ public class SponsoredStory {
     }
 
     /**
-     * Sets SponsoredStoryListener to know when the story is completely fetched and parsed
+     * Sets OnSponsoredStoryDataListener to know when the story is completely fetched and parsed
      *
-     * @param onSponsoredStoryListener
+     * @param onSponsoredStoryDataListener
      */
-    public void setOnSponsoredStoryListener(OnSponsoredStoryListener onSponsoredStoryListener) {
-        this.onSponsoredStoryListener = onSponsoredStoryListener;
+    public void setOnSponsoredStoryDataListener(OnSponsoredStoryDataListener onSponsoredStoryDataListener) {
+        this.onSponsoredStoryDataListener = onSponsoredStoryDataListener;
     }
 
     /**
      * Fetching SponsoredStory task.
-     * Triggers onSponsoredStoryData from {@link com.adsnative.android.sdk.story.OnSponsoredStoryListener}
+     * Triggers onSponsoredStoryData from {@link com.adsnative.android.sdk.story.OnSponsoredStoryDataListener}
      * if SponsoredStory is completely fetched and data is correctly parsed. If SponsoredStoryData is null
      * nth is going to be triggered.
      */
@@ -150,7 +150,8 @@ public class SponsoredStory {
             super.onPostExecute(sponsoredStoryData);
             if (sponsoredStoryData != null) {
                 setSponsoredStoryData(sponsoredStoryData);
-                onSponsoredStoryListener.onSponsoredStoryData(sponsoredStoryData);
+
+                onSponsoredStoryDataListener.onSponsoredStoryData(sponsoredStoryData);
             }
         }
     }
