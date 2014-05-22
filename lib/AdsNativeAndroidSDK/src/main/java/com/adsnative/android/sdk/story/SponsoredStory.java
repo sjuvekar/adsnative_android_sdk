@@ -3,6 +3,7 @@ package com.adsnative.android.sdk.story;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.adsnative.android.sdk.Constants;
@@ -46,18 +47,24 @@ public class SponsoredStory {
      * Fetches AdvertisingId from device and after that starts task that fetches sponsored story
      */
     public void loadRequest() {
-        new GetAdvertisingId(context) {
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                if (s != null) {
-                    setUuid(s);
-                    new GetSponsoredStoryTask(adRequest, deviceInfo).execute(s);
-                } else {
-                    setUuid("");
+        if (Build.BRAND.equalsIgnoreCase("generic")) {
+            //Allows lib to be run on emulator
+            setUuid("");
+            new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
+        } else {
+            new GetAdvertisingId(context) {
+                @Override
+                protected void onPostExecute(String s) {
+                    super.onPostExecute(s);
+                    if (s != null) {
+                        setUuid(s);
+                        new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
+                    } else {
+                        setUuid("");
+                    }
                 }
-            }
-        }.execute();
+            }.execute();
+        }
     }
 
     /**
@@ -121,12 +128,7 @@ public class SponsoredStory {
                 SponsoredStoryData sponsoredStoryData = null;
                 try {
                     sponsoredStoryData = new GetSponsoredStoryResponse(json).parseJson();
-                    String url;
-                    if (sponsoredStoryData.getThumbnailUrl().startsWith("http:"))
-                        url = sponsoredStoryData.getThumbnailUrl();
-                    else
-                        url = "http:" + sponsoredStoryData.getThumbnailUrl();
-                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream()));
+                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream()));
                 } catch (JSONException e) {
                     Log.e(Constants.ERROR_TAG, e.getMessage());
                     return null;

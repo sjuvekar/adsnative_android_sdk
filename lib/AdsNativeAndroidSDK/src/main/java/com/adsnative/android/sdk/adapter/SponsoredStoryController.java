@@ -69,7 +69,7 @@ public class SponsoredStoryController {
 
         if (!impressionsList.contains(position)) {
             if (!newData.getSponsoredStoryData().getTrackingTags().isEmpty())
-                ((RelativeLayout) view).addView(getWebView(sponsoredStory.getSponsoredStoryData()));
+                ((RelativeLayout) view).addView(getImpressionPixel(sponsoredStory.getSponsoredStoryData()));
             impressionsList.add(position);
         }
 
@@ -82,7 +82,7 @@ public class SponsoredStoryController {
      * @param sponsoredStoryData
      * @return created 1x1 size WebView
      */
-    private View getWebView(SponsoredStoryData sponsoredStoryData) {
+    private View getImpressionPixel(SponsoredStoryData sponsoredStoryData) {
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
         webView.setWebViewClient(new StoryWebViewClient());

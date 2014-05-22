@@ -39,12 +39,16 @@ public class GetSponsoredStoryRequest {
         String al = deviceInfo.getLocale();
         String tz = deviceInfo.getTimeZone();
         String bd = deviceInfo.getConnectionType();
+        String odin1 = deviceInfo.getODIN1();
 
         String params = "zid=" + zid + "&app=1" + "&ua=" + ua + "&al=" + al + "&tz=" + tz +
-                "&uuid=" + uuid + "&bd=" + bd + "&prefetch=1";
+                "&uuid=" + uuid + "&bd=" + bd + "&odin1=" + odin1;
 
+        if (adRequest.getKeywordsListSize() > 0 ){
+            for (String s : adRequest.getKeywordsList())
+                params += "&keywords[]=" + s;
+        }
         params = params.replaceAll(" ", "%20");
-
         return params;
     }
 

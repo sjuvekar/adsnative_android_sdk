@@ -19,28 +19,28 @@ public class GetSponsoredStoryResponseTest {
 
     private GetSponsoredStoryResponse getSponsoredStoryResponse;
     private String json = "{" +
-            "    \"ad\": {" +
-            "        \"backgroundColor\": \"#fefff2\"," +
-            "        \"brandImageUrl\": \"http://dev-www.adsnative.com/media/brand_images/1/82cc86ad-9070-4b90-9006-1fbca6697694.jpg\"," +
-            "        \"embedUrl\": \"http://api.adsnative.com/v1/creative.html?crid=xyz&sid=sid123\"," +
-            "        \"imageSrc\": \"//files-www2.adsnative.com/media/1/xyz.jpg\"," +
-            "        \"promotedBy\": \"Tesla\"," +
-            "        \"promotedByTag\": \"Promoted by\"," +
-            "        \"promotedByUrl\": \"http://api.adsnative.com/v1/ad.click?u=http%3A%2F%2Fxyz.com%2F&sid=sid123\"," +
-            "        \"summary\": \"Tesla teased electric motorheads earlier this week by announcing an event that would show off its curious battery swapping system...\"," +
-            "        \"target\": \"_parent\"," +
-            "        \"title\": \"Tesla Shows Off A 90-Second Battery Swap System, Wants It At Supercharging Stations By Year's End\"," +
-            "        \"trackingTags\": \"\"," +
-            "        \"type\": \"story\"," +
-            "        \"url\": \"http://api.adsnative.com/v1/ad.click?u=http%3A%2F%2Fxyz.com%2F&sid=sid123\"" +
-            "    }," +
-            "    \"cid\": \"cid123\"," +
-            "    \"count\": 1," +
-            "    \"crid\": \"crid123\"," +
-            "    \"sid\": \"sid123\"," +
-            "    \"status\": \"OK\"," +
-            "    \"uuid\": \"uuid123\"," +
-            "    \"zid\": \"ping\"" +
+            "   \"ad\": {" +
+            "       \"backgroundColor\": \"#fefff2\"," +
+            "       \"brandImageUrl\": \"http://dev-www.adsnative.com/media/brand_images/1/82cc86ad-9070-4b90-9006-1fbca6697694.jpg\"," +
+            "       \"embedUrl\": \"http://dev-api.adsnative.com/v1/creative.html?crid=LFGRP9OI&sid=tnqvzhb71xh8da4349n1myyhhkp4k8r3\"," +
+            "       \"imageSrc\": \"http://dev-www.adsnative.com/media/1/cfc02947-4103-4f57-ba0d-fda9d8a6c6ff.jpg\"," +
+            "       \"promotedBy\": \"RedBull\"," +
+            "       \"promotedByTag\": \"\"," +
+            "       \"promotedByUrl\": \"http://dev-api.adsnative.com/v1/ad.click?u=http%3A%2F%2Fredbull.com%2F&sid=tnqvzhb71xh8da4349n1myyhhkp4k8r3\"," +
+            "       \"summary\": \"Tesla teased electric motorheads earlier this week by announcing an event that would show off its curious battery swapping system...\"," +
+            "       \"target\": \"_parent\"," +
+            "       \"title\": \"Skateboarders take over a Chicago office space - Red Bull DEMO\"," +
+            "       \"trackingTags\": \"<img src=\\\"http://dev-api.adsnative.com/v1/log/impression.gif?crid=LFGRP9OI&sid=tnqvzhb71xh8da4349n1myyhhkp4k8r3\\\" BORDER=0 WIDTH=1 HEIGHT=1>\\n<img src=\\\"\\\">\"," +
+            "       \"type\": \"video\"," +
+            "       \"url\": \"http://dev-api.adsnative.com/v1/ad.click?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DelojrNqYNtY%26amp%3Bfeature%3Dyoutube_gdata&sid=tnqvzhb71xh8da4349n1myyhhkp4k8r3\"" +
+            "   }," +
+            "   \"cid\": \"S9XANGW9\"," +
+            "   \"count\": 1," +
+            "   \"crid\": \"LFGRP9OI\"," +
+            "   \"sid\": \"tnqvzhb71xh8da4349n1myyhhkp4k8r3\"," +
+            "   \"status\": \"OK\"," +
+            "   \"uuid\": \"d322cb79-0914-4521-9fb9-f3a4ec4f3c8e\"," +
+            "   \"zid\": \"ping\"" +
             "}";
 
     @Before
@@ -53,12 +53,12 @@ public class GetSponsoredStoryResponseTest {
     }
 
     @Test
-    public void testParseJson(){
-            Assert.assertNotNull(getSponsoredStoryResponse.parseJson());
+    public void testParseJson() {
+        Assert.assertNotNull(getSponsoredStoryResponse.parseJson());
     }
 
     @Test
-    public void testStatus(){
+    public void testStatus() {
         Assert.assertEquals("OK", getSponsoredStoryResponse.getStatus());
     }
 
