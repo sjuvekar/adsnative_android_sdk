@@ -48,6 +48,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));
                     storyData.setThumbnailUrl(checkHttp(ad.getString("imageSrc")));
+                    Log.d("TESTEST", "url: " + storyData.getThumbnailUrl());
                     storyData.setEmbedUrl(checkHttp(ad.getString("embedUrl")));
                     storyData.setType(ad.getString("type"));
                     storyData.setPromotedBy(ad.getString("promotedBy"));
@@ -69,12 +70,12 @@ public class GetSponsoredStoryResponse extends AdResponse {
         return null;
     }
 
-    private String extractUrlFromTrackingTags(String trackingTags){
+    private String extractUrlFromTrackingTags(String trackingTags) {
         int length = trackingTags.length();
         return trackingTags.substring(10, length - 29);
     }
 
-    private String checkHttp(String value){
+    private String checkHttp(String value) {
         if (value.startsWith("http:"))
             return value;
         else

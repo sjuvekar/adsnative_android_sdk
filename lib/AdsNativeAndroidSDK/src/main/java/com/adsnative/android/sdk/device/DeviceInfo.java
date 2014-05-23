@@ -118,11 +118,12 @@ public class DeviceInfo {
 
     /**
      * Connection type getter
-     *<p>
-     *Possible return values:
+     * <p/>
+     * Possible return values:
      * 'None' - if there is no connection,
      * 'WWAN' - if connection is via Mobile,
      * 'Wifi' - if connection is via Wifi.
+     *
      * @return the connection type string
      */
     public String getConnectionType() {

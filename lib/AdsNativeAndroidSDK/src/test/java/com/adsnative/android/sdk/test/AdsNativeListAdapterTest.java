@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +24,24 @@ public class AdsNativeListAdapterTest {
     private Context context;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         context = Robolectric.getShadowApplication().getApplicationContext();
         List<String> list = new ArrayList<String>();
         for (int i = 0; i < 10; i++) {
             list.add("i"+i);
         }
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, list);
-        adsNativeListAdapter = new AdsNativeListAdapter(context, adapter, new int[]{3, 6, 13}, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+        adsNativeListAdapter = new AdsNativeListAdapter(context, adapter, new int[]{99, -45, 3, 3, -1, 3, 16, 9 }, "Uw8JRh5gifh9sxZKZ-IRgVC0WNcgOGWxSyEFjObs");
+    }
+
+    @Test
+    public void testSponsoredStoriesPositionsList(){
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(3);
+        list.add(9);
+        list.add(16);
+        list.add(99);
+        Assert.assertEquals(list, adsNativeListAdapter.getSponsoredStoriesPositions());
     }
 
     @Test

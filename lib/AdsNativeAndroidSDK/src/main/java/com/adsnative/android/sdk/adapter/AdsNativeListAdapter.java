@@ -26,7 +26,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private final Context context;
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
-    private List<SponsoredStory> sponsoredStories;
     private String adUnitId;
     private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
@@ -50,7 +49,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 this.sponsoredStoriesPositions.add(i);
         }
         Collections.sort(this.sponsoredStoriesPositions);
-        this.sponsoredStories = new ArrayList<SponsoredStory>();
         this.positionController = new PositionController(this.originalAdapter.getCount());
         this.sponsoredStoryController = new SponsoredStoryController(context);
         this.adUnitId = adUnitId;
@@ -153,6 +151,15 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
+    }
+
+    /**
+     * SponsoredStoriesPositions list getter
+     *
+     * @return SponsoredStoriesPositions list
+     */
+    public List<Integer> getSponsoredStoriesPositions() {
+        return this.sponsoredStoriesPositions;
     }
 
     /**

@@ -2,13 +2,11 @@ package com.adsnative.android.sdk.story;
 
 import android.graphics.Bitmap;
 
-import java.io.Serializable;
-
 /**
  * Container class for SponsoredStory data fetched from server
  */
 
-public class SponsoredStoryData implements Serializable {
+public class SponsoredStoryData {
 
     private String title;
     private String trackingTags;

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,12 +31,23 @@ public class SponsoredStoryController {
     private List<Integer> impressionsList;
     private List<SponsoredStory> sponsoredStories;
     private OnSponsoredStoryListener onSponsoredStoryListener;
+
     /**
      * Constructor
      *
      * @param context
      */
     public SponsoredStoryController(Context context) {
+        this(context, null);
+    }
+
+    /**
+     * Constructor with WebViewClient
+     *
+     * @param context
+     * @param webViewClient
+     */
+    public SponsoredStoryController(Context context, WebViewClient webViewClient) {
         this.context = context;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
@@ -49,18 +61,18 @@ public class SponsoredStoryController {
      * @param adUnitId AdsNative user ID
      * @return
      */
-    public SponsoredStory fetchSponsoredStory(String adUnitId){
+    public SponsoredStory fetchSponsoredStory(String adUnitId) {
         return this.fetchSponsoredStory(adUnitId, null);
     }
 
     /**
      * Fetches {@link com.adsnative.android.sdk.story.SponsoredStory} with specified keywords
      *
-     * @param adUnitId AdsNative user ID
+     * @param adUnitId          AdsNative user ID
      * @param adRequestKeywords list of requested keywords
      * @return
      */
-    public SponsoredStory fetchSponsoredStory(String adUnitId, List<String> adRequestKeywords){
+    public SponsoredStory fetchSponsoredStory(String adUnitId, List<String> adRequestKeywords) {
         final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId, adRequestKeywords), context);
         sponsoredStory.loadRequest();
         sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
@@ -77,7 +89,7 @@ public class SponsoredStoryController {
      *
      * @param sponsoredStory
      */
-    public void addSponsoredStory(SponsoredStory sponsoredStory){
+    private void addSponsoredStory(SponsoredStory sponsoredStory) {
         this.sponsoredStories.add(sponsoredStory);
         onSponsoredStoryListener.onSponsoredStory(sponsoredStory);
     }
@@ -87,7 +99,7 @@ public class SponsoredStoryController {
      *
      * @param onSponsoredStoryListener
      */
-    public void setOnSponsoredStoryListener(OnSponsoredStoryListener onSponsoredStoryListener){
+    public void setOnSponsoredStoryListener(OnSponsoredStoryListener onSponsoredStoryListener) {
         this.onSponsoredStoryListener = onSponsoredStoryListener;
     }
 
@@ -98,7 +110,7 @@ public class SponsoredStoryController {
      * @param sponsoredStoryId
      * @return
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, int sponsoredStoryId){
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, int sponsoredStoryId) {
         return this.getSponsoredStoryView(sponsoredStory, null, sponsoredStoryId);
     }
 
@@ -106,7 +118,7 @@ public class SponsoredStoryController {
      * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId)
      *
      * @param sponsoredStory
-     * @param convertView if is {@code null} proper layout will be rendered for View
+     * @param convertView      if is {@code null} proper layout will be rendered for View
      * @param sponsoredStoryId
      * @return fully functional SponsoredStory View
      */
@@ -120,12 +132,12 @@ public class SponsoredStoryController {
      * and log impression by displaying 1x1 drop pixel.
      *
      * @param sponsoredStory
-     * @param convertView if {@code null} default layout will be rendered for View
-     * @param parent if {@code null} generated view is not going to be attached to any parent
+     * @param convertView      if {@code null} default layout will be rendered for View
+     * @param parent           if {@code null} generated view is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
      * @param sponsoredStoryId custom id for handling impression inside application
      * @return
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId){
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId) {
         View view = convertView;
         if (view == null) {
             view = getStoryView(sponsoredStory.getSponsoredStoryData());
@@ -145,7 +157,10 @@ public class SponsoredStoryController {
             impressionsList.add(sponsoredStoryId);
         }
 
-        if (parent != null){
+        if (parent != null) {
+            if (view.getParent() != null) {
+                ((ViewGroup) view.getParent()).removeView(view);
+            }
             parent.addView(view);
         }
 
@@ -238,6 +253,7 @@ public class SponsoredStoryController {
         /**
          * Open proper WebView and starts {@link com.adsnative.android.sdk.WebViewActivity}
          * for SponsoredStory attached to  after the click action was performed
+         *
          * @param v
          */
         @Override

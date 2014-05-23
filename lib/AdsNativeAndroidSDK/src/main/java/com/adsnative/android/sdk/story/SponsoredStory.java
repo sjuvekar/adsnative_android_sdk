@@ -41,6 +41,7 @@ public class SponsoredStory {
         this.adRequest = adRequest;
         this.context = context;
         this.deviceInfo = new DeviceInfo(context);
+        this.sponsoredStoryData = new SponsoredStoryData();
     }
 
     /**
@@ -58,10 +59,10 @@ public class SponsoredStory {
                     super.onPostExecute(s);
                     if (s != null) {
                         setUuid(s);
-                        new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
                     } else {
                         setUuid("");
                     }
+                    new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
                 }
             }.execute();
         }
@@ -123,7 +124,7 @@ public class SponsoredStory {
         protected SponsoredStoryData doInBackground(String... params) {
             GetSponsoredStoryRequest getSponsoredStoryRequest =
                     new GetSponsoredStoryRequest(adRequest, uuid, deviceInfo);
-            String json = getSponsoredStoryRequest.get();
+            String json = getSponsoredStoryRequest.get().body();
             if (json != null) {
                 SponsoredStoryData sponsoredStoryData = null;
                 try {
@@ -150,7 +151,6 @@ public class SponsoredStory {
             super.onPostExecute(sponsoredStoryData);
             if (sponsoredStoryData != null) {
                 setSponsoredStoryData(sponsoredStoryData);
-
                 onSponsoredStoryDataListener.onSponsoredStoryData(sponsoredStoryData);
             }
         }

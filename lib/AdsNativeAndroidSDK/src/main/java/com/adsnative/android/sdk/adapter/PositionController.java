@@ -49,7 +49,7 @@ public class PositionController {
      * Creates default mapping in 1:1 ratio for new originals.
      * Adjusts positions of SponsoredStories.
      *
-      * @param newSize new size of the original list
+     * @param newSize new size of the original list
      */
     public void updateOriginalSize(int newSize) {
         setOriginalSize(newSize);
