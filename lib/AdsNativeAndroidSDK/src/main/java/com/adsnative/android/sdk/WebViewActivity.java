@@ -11,7 +11,6 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.adsnative.android.sdk.request.LogTimeRequest;
 import com.adsnative.android.sdk.story.StoryWebViewClient;
@@ -102,10 +101,8 @@ public class WebViewActivity extends Activity {
         @Override
         protected void onPostExecute(Integer code) {
             super.onPostExecute(code);
-            if (code == 200) {
+            if (code == 200)
                 Log.d("AdsNative", "Time logged");
-                Toast.makeText(WebViewActivity.this, "Time logged correctly. Value: " + ((endTime - startTime) / 1000) + "s", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }

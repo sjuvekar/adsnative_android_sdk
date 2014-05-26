@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
-    private final Context context;
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
     private String adUnitId;
@@ -41,7 +40,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * @param adUnitId
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
-        this.context = context;
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = new ArrayList<Integer>();
         for (Integer i : sponsoredStoriesPositions) {
@@ -50,7 +48,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         }
         Collections.sort(this.sponsoredStoriesPositions);
         this.positionController = new PositionController(this.originalAdapter.getCount());
-        this.sponsoredStoryController = new SponsoredStoryController(context, positionController.getSponsoredStoriesPositionsListAdjusted());
+        this.sponsoredStoryController = new SponsoredStoryController(context);
         this.adUnitId = adUnitId;
         originalAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override

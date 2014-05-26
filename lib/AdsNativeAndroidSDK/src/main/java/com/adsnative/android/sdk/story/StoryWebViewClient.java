@@ -6,9 +6,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import java.util.Calendar;
 
 /**
  * Handles displaying WebViews and manages progress bar while loading the page content.
@@ -34,10 +31,6 @@ public class StoryWebViewClient extends WebViewClient {
         this.progressBar = progressBar;
     }
 
-    public StoryWebViewClient(Context context) {
-        this.context = context;
-    }
-
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
@@ -54,9 +47,6 @@ public class StoryWebViewClient extends WebViewClient {
         super.onPageFinished(view, url);
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
-        else if (context != null) {
-            Toast.makeText(context, "Impression logged by 1x1 drop pixel " + Calendar.getInstance().getTimeInMillis(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**

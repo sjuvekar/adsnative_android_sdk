@@ -114,17 +114,6 @@ public class PositionController {
         return null;
     }
 
-    public void updateSponsoredStory(SponsoredStory sponsoredStory, int position) {
-        if (isAd(position)) {
-            int index = 0;
-            for (Integer i : sponsoredStoriesPositionsListAdjusted) {
-                if (i == position)
-                    sponsoredStoriesList.set(index, sponsoredStory);
-                index++;
-            }
-        }
-    }
-
     /**
      * Clears all SponsoredStories and sets default/original values.
      */

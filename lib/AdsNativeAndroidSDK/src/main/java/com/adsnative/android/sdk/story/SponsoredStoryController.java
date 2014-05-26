@@ -29,31 +29,19 @@ public class SponsoredStoryController {
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private List<String> impressionsList;
     private List<SponsoredStory> sponsoredStories;
-    private List<Integer> cachedSponsoredStoriesPositionsList;
     private OnSponsoredStoryListener onSponsoredStoryListener;
-
-    /**
-     * Constructor
-     *
-     * @param context
-     */
-    public SponsoredStoryController(Context context) {
-        this(context, null);
-    }
 
     /**
      * Constructor with cached sponsored stories positions list from listview
      *
      * @param context
-     * @param cachedList
      */
-    public SponsoredStoryController(Context context, List<Integer> cachedList) {
+    public SponsoredStoryController(Context context) {
         this.context = context;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
         this.impressionsList = new ArrayList<String>();
         this.sponsoredStories = new ArrayList<SponsoredStory>();
-        this.cachedSponsoredStoriesPositionsList = cachedList;
     }
 
     /**
@@ -175,7 +163,7 @@ public class SponsoredStoryController {
     private View getImpressionPixel(SponsoredStoryData sponsoredStoryData) {
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
-        webView.setWebViewClient(new StoryWebViewClient(context));
+        webView.setWebViewClient(new StoryWebViewClient());
         webView.loadUrl(sponsoredStoryData.getTrackingTags());
         return webView;
     }
@@ -229,7 +217,6 @@ public class SponsoredStoryController {
         textLayout.addView(byLine);
 
         linearLayout.addView(textLayout);
-//        linearLayout.setBackgroundColor(Color.parseColor("#00a0c1"));
         linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
         relativeLayout.addView(linearLayout);
 
