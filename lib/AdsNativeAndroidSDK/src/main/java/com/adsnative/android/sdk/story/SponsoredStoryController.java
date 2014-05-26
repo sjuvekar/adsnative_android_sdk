@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +27,9 @@ public class SponsoredStoryController {
     private final Context context;
     private final SponsoredStoryClickListener sponsoredStoryClickListener;
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
-    private List<Integer> impressionsList;
+    private List<String> impressionsList;
     private List<SponsoredStory> sponsoredStories;
+    private List<Integer> cachedSponsoredStoriesPositionsList;
     private OnSponsoredStoryListener onSponsoredStoryListener;
 
     /**
@@ -42,17 +42,18 @@ public class SponsoredStoryController {
     }
 
     /**
-     * Constructor with WebViewClient
+     * Constructor with cached sponsored stories positions list from listview
      *
      * @param context
-     * @param webViewClient
+     * @param cachedList
      */
-    public SponsoredStoryController(Context context, WebViewClient webViewClient) {
+    public SponsoredStoryController(Context context, List<Integer> cachedList) {
         this.context = context;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
-        this.impressionsList = new ArrayList<Integer>();
+        this.impressionsList = new ArrayList<String>();
         this.sponsoredStories = new ArrayList<SponsoredStory>();
+        this.cachedSponsoredStoriesPositionsList = cachedList;
     }
 
     /**
@@ -107,23 +108,21 @@ public class SponsoredStoryController {
      * * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, int sponsoredStoryId)
      *
      * @param sponsoredStory
-     * @param sponsoredStoryId
      * @return
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, int sponsoredStoryId) {
-        return this.getSponsoredStoryView(sponsoredStory, null, sponsoredStoryId);
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory) {
+        return this.getSponsoredStoryView(sponsoredStory, null);
     }
 
     /**
      * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId)
      *
      * @param sponsoredStory
-     * @param convertView      if is {@code null} proper layout will be rendered for View
-     * @param sponsoredStoryId
+     * @param convertView    if is {@code null} proper layout will be rendered for View
      * @return fully functional SponsoredStory View
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, int sponsoredStoryId) {
-        return this.getSponsoredStoryView(sponsoredStory, convertView, null, sponsoredStoryId);
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView) {
+        return this.getSponsoredStoryView(sponsoredStory, convertView, null);
     }
 
     /**
@@ -132,12 +131,11 @@ public class SponsoredStoryController {
      * and log impression by displaying 1x1 drop pixel.
      *
      * @param sponsoredStory
-     * @param convertView      if {@code null} default layout will be rendered for View
-     * @param parent           if {@code null} generated view is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
-     * @param sponsoredStoryId custom id for handling impression inside application
+     * @param convertView    if {@code null} default layout will be rendered for View
+     * @param parent         if {@code null} generated view is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
      * @return
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId) {
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
             view = getStoryView(sponsoredStory.getSponsoredStoryData());
@@ -151,10 +149,11 @@ public class SponsoredStoryController {
 
         view.setOnClickListener(this.sponsoredStoryClickListener);
 
-        if (!impressionsList.contains(sponsoredStoryId)) {
+        String sid = sponsoredStory.getSponsoredStoryData().getSessionId();
+        if (!impressionsList.contains(sid)) {
             if (!newData.getSponsoredStoryData().getTrackingTags().isEmpty())
                 ((RelativeLayout) view).addView(getImpressionPixel(sponsoredStory.getSponsoredStoryData()));
-            impressionsList.add(sponsoredStoryId);
+            impressionsList.add(sid);
         }
 
         if (parent != null) {
@@ -176,7 +175,7 @@ public class SponsoredStoryController {
     private View getImpressionPixel(SponsoredStoryData sponsoredStoryData) {
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
-        webView.setWebViewClient(new StoryWebViewClient());
+        webView.setWebViewClient(new StoryWebViewClient(context));
         webView.loadUrl(sponsoredStoryData.getTrackingTags());
         return webView;
     }
@@ -230,8 +229,8 @@ public class SponsoredStoryController {
         textLayout.addView(byLine);
 
         linearLayout.addView(textLayout);
-        linearLayout.setBackgroundColor(Color.parseColor("#00a0c1"));
-//        linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
+//        linearLayout.setBackgroundColor(Color.parseColor("#00a0c1"));
+        linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
         relativeLayout.addView(linearLayout);
 
         return relativeLayout;
@@ -243,6 +242,7 @@ public class SponsoredStoryController {
     public void clearSponsoredStories() {
         this.sponsoredStories.clear();
         this.sponsoredStoryWeakHashMap.clear();
+        this.impressionsList.clear();
     }
 
     /**

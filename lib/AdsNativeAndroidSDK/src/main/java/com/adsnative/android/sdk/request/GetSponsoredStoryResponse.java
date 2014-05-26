@@ -48,7 +48,6 @@ public class GetSponsoredStoryResponse extends AdResponse {
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));
                     storyData.setThumbnailUrl(checkHttp(ad.getString("imageSrc")));
-                    Log.d("TESTEST", "url: " + storyData.getThumbnailUrl());
                     storyData.setEmbedUrl(checkHttp(ad.getString("embedUrl")));
                     storyData.setType(ad.getString("type"));
                     storyData.setPromotedBy(ad.getString("promotedBy"));

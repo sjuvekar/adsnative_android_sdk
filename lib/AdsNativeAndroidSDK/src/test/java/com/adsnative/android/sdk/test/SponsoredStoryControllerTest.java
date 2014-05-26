@@ -49,6 +49,6 @@ public class SponsoredStoryControllerTest {
 
     @Test
     public void testGetSponsoredStoryView(){
-        Assert.assertNotNull(sponsoredStoryController.getSponsoredStoryView(sponsoredStory, 10));
+        Assert.assertNotNull(sponsoredStoryController.getSponsoredStoryView(sponsoredStory));
     }
 }

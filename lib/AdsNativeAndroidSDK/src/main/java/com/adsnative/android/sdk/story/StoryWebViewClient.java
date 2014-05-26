@@ -1,10 +1,14 @@
 package com.adsnative.android.sdk.story;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.util.Calendar;
 
 /**
  * Handles displaying WebViews and manages progress bar while loading the page content.
@@ -13,6 +17,7 @@ import android.widget.ProgressBar;
 public class StoryWebViewClient extends WebViewClient {
 
     private ProgressBar progressBar;
+    private Context context;
 
     /**
      * Empty constructor for 1x1 drop pixel WebView.
@@ -27,6 +32,10 @@ public class StoryWebViewClient extends WebViewClient {
      */
     public StoryWebViewClient(ProgressBar progressBar) {
         this.progressBar = progressBar;
+    }
+
+    public StoryWebViewClient(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -45,6 +54,9 @@ public class StoryWebViewClient extends WebViewClient {
         super.onPageFinished(view, url);
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
+        else if (context != null) {
+            Toast.makeText(context, "Impression logged by 1x1 drop pixel " + Calendar.getInstance().getTimeInMillis(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

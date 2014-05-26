@@ -1,4 +1,4 @@
-package com.adsnative.android.sdk.sampleapp;
+package com.adsnative.android.sdk.testapp;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.adsnative.android.sdk.sampleapp.adapter.MainAdapter;
-import com.adsnative.android.sdk.sampleapp.item.MainListItem;
+import com.adsnative.android.sdk.testapp.adapter.MainAdapter;
+import com.adsnative.android.sdk.testapp.item.MainListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class MyActivity extends ListActivity {
         setContentView(R.layout.main);
 
         List<MainListItem> listItems = new ArrayList<MainListItem>();
-        listItems.add(new MainListItem("News", R.drawable.news));
-        listItems.add(new MainListItem("YouTube", R.drawable.youtube));
+        listItems.add(new MainListItem("News", R.drawable.twitter_egg));
+        listItems.add(new MainListItem("CustomViews", R.drawable.ic_launcher));
 
         MainAdapter listAdapter = new MainAdapter(this, R.layout.main_list_item, listItems);
 
@@ -37,7 +37,7 @@ public class MyActivity extends ListActivity {
                 startActivity(new Intent(this, NewsActivity.class));
                 break;
             case 1:
-                startActivity(new Intent(this, YouTubeActivity.class));
+                startActivity(new Intent(this, CustomViewsActivity.class));
                 break;
         }
     }

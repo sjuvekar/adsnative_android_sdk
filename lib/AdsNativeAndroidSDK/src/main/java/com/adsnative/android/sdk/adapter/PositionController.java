@@ -78,6 +78,15 @@ public class PositionController {
     }
 
     /**
+     * SponsoredStoriesPositionsListAdjusted getter. Provides list of adjusted positions of the sponsored stories.
+     *
+     * @return list of adjusted positions of the sponsored stories
+     */
+    public List<Integer> getSponsoredStoriesPositionsListAdjusted() {
+        return this.sponsoredStoriesPositionsListAdjusted;
+    }
+
+    /**
      * Checks if there is a SponsoredStory at specified position.
      *
      * @param position
@@ -103,6 +112,17 @@ public class PositionController {
             }
         }
         return null;
+    }
+
+    public void updateSponsoredStory(SponsoredStory sponsoredStory, int position) {
+        if (isAd(position)) {
+            int index = 0;
+            for (Integer i : sponsoredStoriesPositionsListAdjusted) {
+                if (i == position)
+                    sponsoredStoriesList.set(index, sponsoredStory);
+                index++;
+            }
+        }
     }
 
     /**

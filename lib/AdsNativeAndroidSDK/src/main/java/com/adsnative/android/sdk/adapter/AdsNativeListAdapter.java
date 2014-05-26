@@ -50,7 +50,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         }
         Collections.sort(this.sponsoredStoriesPositions);
         this.positionController = new PositionController(this.originalAdapter.getCount());
-        this.sponsoredStoryController = new SponsoredStoryController(context);
+        this.sponsoredStoryController = new SponsoredStoryController(context, positionController.getSponsoredStoriesPositionsListAdjusted());
         this.adUnitId = adUnitId;
         originalAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -234,7 +234,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
             int originalPosition = this.positionController.getOriginalPosition(position);
             return this.originalAdapter.getView(originalPosition, convertView, parent);
         }
-        return this.sponsoredStoryController.getSponsoredStoryView(this.positionController.getSponsoredStory(position), convertView, position);
+        return this.sponsoredStoryController.getSponsoredStoryView(this.positionController.getSponsoredStory(position), convertView);
     }
 }
 
