@@ -14,8 +14,8 @@ public class Connectivity {
      * Returns details about the currently active default data network.
      *
      * @return a {@link NetworkInfo} object for the current default network
-     *        or {@code null} if no network default network is currently active
-     *
+     * or {@code null} if no network default network is currently active
+     * <p/>
      * <p>This method requires the call to hold the permission
      * {@link android.Manifest.permission#ACCESS_NETWORK_STATE}.
      */

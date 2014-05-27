@@ -1,13 +1,11 @@
 package com.adsnative.android.sdk.story;
 
-/**
- * Listens if sponsored story if completely fetched from server
- */
 public interface OnSponsoredStoryListener {
+
     /**
-     * Should be triggered when sponsored story data is completely fetched and correctly parsed
+     * Should be triggered when sponsored story data is added to the {@link com.adsnative.android.sdk.story.SponsoredStoryController}
      *
-     * @param sponsoredStoryData
+     * @param sponsoredStory
      */
-    public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData);
+    public void onSponsoredStory(SponsoredStory sponsoredStory);
 }

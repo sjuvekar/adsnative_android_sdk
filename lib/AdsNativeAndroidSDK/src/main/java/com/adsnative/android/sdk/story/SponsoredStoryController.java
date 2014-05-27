@@ -1,4 +1,4 @@
-package com.adsnative.android.sdk.adapter;
+package com.adsnative.android.sdk.story;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,9 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.adsnative.android.sdk.WebViewActivity;
-import com.adsnative.android.sdk.story.SponsoredStory;
-import com.adsnative.android.sdk.story.SponsoredStoryData;
-import com.adsnative.android.sdk.story.StoryWebViewClient;
+import com.adsnative.android.sdk.request.AdRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,8 @@ public class SponsoredStoryController {
     private final SponsoredStoryClickListener sponsoredStoryClickListener;
     private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private List<Integer> impressionsList;
+    private List<SponsoredStory> sponsoredStories;
+    private OnSponsoredStoryListener onSponsoredStoryListener;
 
     /**
      * Constructor
@@ -37,23 +38,106 @@ public class SponsoredStoryController {
      * @param context
      */
     public SponsoredStoryController(Context context) {
+        this(context, null);
+    }
+
+    /**
+     * Constructor with WebViewClient
+     *
+     * @param context
+     * @param webViewClient
+     */
+    public SponsoredStoryController(Context context, WebViewClient webViewClient) {
         this.context = context;
         this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
         this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
         this.impressionsList = new ArrayList<Integer>();
+        this.sponsoredStories = new ArrayList<SponsoredStory>();
+    }
+
+    /**
+     * Fetches {@link com.adsnative.android.sdk.story.SponsoredStory} without any keywords
+     *
+     * @param adUnitId AdsNative user ID
+     * @return
+     */
+    public SponsoredStory fetchSponsoredStory(String adUnitId) {
+        return this.fetchSponsoredStory(adUnitId, null);
+    }
+
+    /**
+     * Fetches {@link com.adsnative.android.sdk.story.SponsoredStory} with specified keywords
+     *
+     * @param adUnitId          AdsNative user ID
+     * @param adRequestKeywords list of requested keywords
+     * @return
+     */
+    public SponsoredStory fetchSponsoredStory(String adUnitId, List<String> adRequestKeywords) {
+        final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId, adRequestKeywords), context);
+        sponsoredStory.loadRequest();
+        sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
+            @Override
+            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+                addSponsoredStory(sponsoredStory);
+            }
+        });
+        return sponsoredStory;
+    }
+
+    /**
+     * Adds specified SponsoredStory to the property list of SponsoredStories
+     *
+     * @param sponsoredStory
+     */
+    private void addSponsoredStory(SponsoredStory sponsoredStory) {
+        this.sponsoredStories.add(sponsoredStory);
+        onSponsoredStoryListener.onSponsoredStory(sponsoredStory);
+    }
+
+    /**
+     * Sets OnSponsoredStoryListener to know when the story is completely added to the {@link com.adsnative.android.sdk.story.SponsoredStoryController}
+     *
+     * @param onSponsoredStoryListener
+     */
+    public void setOnSponsoredStoryListener(OnSponsoredStoryListener onSponsoredStoryListener) {
+        this.onSponsoredStoryListener = onSponsoredStoryListener;
+    }
+
+    /**
+     * * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, int sponsoredStoryId)
+     *
+     * @param sponsoredStory
+     * @param sponsoredStoryId
+     * @return
+     */
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, int sponsoredStoryId) {
+        return this.getSponsoredStoryView(sponsoredStory, null, sponsoredStoryId);
+    }
+
+    /**
+     * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId)
+     *
+     * @param sponsoredStory
+     * @param convertView      if is {@code null} proper layout will be rendered for View
+     * @param sponsoredStoryId
+     * @return fully functional SponsoredStory View
+     */
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, int sponsoredStoryId) {
+        return this.getSponsoredStoryView(sponsoredStory, convertView, null, sponsoredStoryId);
     }
 
     /**
      * Uses getStoryView(SponsoredStoryData) to render proper layout of SponsoredStory.
      * Maps SponsoredStories to its proper Views. Sets SponsoredStory click listener
-     * and log impression by display 1x1 drop pixel.
+     * and log impression by displaying 1x1 drop pixel.
+     *
      * @param sponsoredStory
-     * @param convertView if is {@code null} proper layout will be rendered for View
-     * @param position
-     * @return fully functional SponsoredStory View
+     * @param convertView      if {@code null} default layout will be rendered for View
+     * @param parent           if {@code null} generated view is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
+     * @param sponsoredStoryId custom id for handling impression inside application
+     * @return
      */
-    public View placeSponsoredStory(SponsoredStory sponsoredStory, View convertView, int position) {
-
+    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId) {
         View view = convertView;
         if (view == null) {
             view = getStoryView(sponsoredStory.getSponsoredStoryData());
@@ -67,10 +151,17 @@ public class SponsoredStoryController {
 
         view.setOnClickListener(this.sponsoredStoryClickListener);
 
-        if (!impressionsList.contains(position)) {
+        if (!impressionsList.contains(sponsoredStoryId)) {
             if (!newData.getSponsoredStoryData().getTrackingTags().isEmpty())
                 ((RelativeLayout) view).addView(getImpressionPixel(sponsoredStory.getSponsoredStoryData()));
-            impressionsList.add(position);
+            impressionsList.add(sponsoredStoryId);
+        }
+
+        if (parent != null) {
+            if (view.getParent() != null) {
+                ((ViewGroup) view.getParent()).removeView(view);
+            }
+            parent.addView(view);
         }
 
         return view;
@@ -101,10 +192,10 @@ public class SponsoredStoryController {
         float density = context.getResources().getDisplayMetrics().density;
 
         RelativeLayout relativeLayout = new RelativeLayout(context);
-        relativeLayout.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT));
+        relativeLayout.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
 
         LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         ImageView imageView = new ImageView(context);
@@ -139,17 +230,18 @@ public class SponsoredStoryController {
         textLayout.addView(byLine);
 
         linearLayout.addView(textLayout);
-        linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
+        linearLayout.setBackgroundColor(Color.parseColor("#00a0c1"));
+//        linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
         relativeLayout.addView(linearLayout);
 
         return relativeLayout;
-
     }
 
     /**
      * Clears all SponsoredStory mappings
      */
-    public void clearAds() {
+    public void clearSponsoredStories() {
+        this.sponsoredStories.clear();
         this.sponsoredStoryWeakHashMap.clear();
     }
 
@@ -161,6 +253,7 @@ public class SponsoredStoryController {
         /**
          * Open proper WebView and starts {@link com.adsnative.android.sdk.WebViewActivity}
          * for SponsoredStory attached to  after the click action was performed
+         *
          * @param v
          */
         @Override

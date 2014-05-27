@@ -33,6 +33,6 @@ public class GetSponsoredStoryRequestTest {
 
     @Test
     public void testGet(){
-        Assert.assertNotNull(getSponsoredStoryRequest.get());
+        Assert.assertEquals(200, getSponsoredStoryRequest.get().code());
     }
 }

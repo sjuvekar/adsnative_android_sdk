@@ -18,8 +18,8 @@ public class GetSponsoredStoryRequest {
     /**
      * Constructor
      *
-     * @param adRequest base request with AdUnitID
-     * @param uuid value of AdvertisingId
+     * @param adRequest  base request with AdUnitID
+     * @param uuid       value of AdvertisingId
      * @param deviceInfo object with all device info data
      */
     public GetSponsoredStoryRequest(AdRequest adRequest, String uuid, DeviceInfo deviceInfo) {
@@ -44,7 +44,7 @@ public class GetSponsoredStoryRequest {
         String params = "zid=" + zid + "&app=1" + "&ua=" + ua + "&al=" + al + "&tz=" + tz +
                 "&uuid=" + uuid + "&bd=" + bd + "&odin1=" + odin1;
 
-        if (adRequest.getKeywordsListSize() > 0 ){
+        if (adRequest.getKeywordsListSize() > 0) {
             for (String s : adRequest.getKeywordsList())
                 params += "&keywords[]=" + s;
         }
@@ -62,16 +62,18 @@ public class GetSponsoredStoryRequest {
     }
 
     /**
-     * Performs GET sponsored story request operation on API and returns response body
+     * Performs GET sponsored story request operation on API and returns response
      *
-     * @return response body
+     * @return response
      */
-    public String get() {
+    public HttpRequest get() {
         try {
-            return HttpRequest.get(getUrl()).body();
+            return HttpRequest.get(getUrl());
         } catch (HttpRequest.HttpRequestException exception) {
             Log.e(Constants.ERROR_TAG, exception.getMessage());
             return null;
         }
     }
+
+
 }
