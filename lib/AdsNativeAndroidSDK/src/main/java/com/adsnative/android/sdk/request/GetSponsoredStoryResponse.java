@@ -42,24 +42,17 @@ public class GetSponsoredStoryResponse extends AdResponse {
                 JSONObject ad = data.getJSONObject("ad");
 
                 if (ad != null) {
-                    if (!ad.getString("trackingTags").isEmpty()) {
-                        String trackingTags = ad.getString("trackingTags");
-                        int length = trackingTags.length();
-                        trackingTags = trackingTags.substring(10, length - 29);
-                        storyData.setTrackingTags(trackingTags);
-                    } else {
-                        storyData.setTrackingTags("");
-                    }
+                    storyData.setTrackingTags(checkHttp(extractUrlFromTrackingTags(ad.getString("trackingTags"))));
                     storyData.setBackgroundColor(ad.getString("backgroundColor"));
-                    storyData.setUrl(ad.getString("url"));
+                    storyData.setUrl(checkHttp(ad.getString("url")));
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));
-                    storyData.setThumbnailUrl(ad.getString("imageSrc"));
-                    storyData.setEmbedUrl(ad.getString("embedUrl"));
+                    storyData.setThumbnailUrl(checkHttp(ad.getString("imageSrc")));
+                    storyData.setEmbedUrl(checkHttp(ad.getString("embedUrl")));
                     storyData.setType(ad.getString("type"));
                     storyData.setPromotedBy(ad.getString("promotedBy"));
                     storyData.setPromotedByTag(ad.getString("promotedByTag"));
-                    storyData.setPromotedByUrl(ad.getString("promotedByUrl"));
+                    storyData.setPromotedByUrl(checkHttp(ad.getString("promotedByUrl")));
                 }
 
                 storyData.setCampaignId(data.getString("cid"));
@@ -74,5 +67,17 @@ public class GetSponsoredStoryResponse extends AdResponse {
             }
         }
         return null;
+    }
+
+    private String extractUrlFromTrackingTags(String trackingTags){
+        int length = trackingTags.length();
+        return trackingTags.substring(10, length - 29);
+    }
+
+    private String checkHttp(String value){
+        if (value.startsWith("http:"))
+            return value;
+        else
+            return "http:" + value;
     }
 }

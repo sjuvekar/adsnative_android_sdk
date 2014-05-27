@@ -33,6 +33,20 @@ public class AdRequestTest {
     }
 
     @Test
+    public void testGetKeywordsList(){
+        Assert.assertNotNull(adRequest.getKeywordsList());
+    }
+
+    @Test
+    public void testGetKeywordsListSize() {
+        Assert.assertEquals(0, adRequest.getKeywordsListSize());
+        adRequest.putKeyword("1");
+        adRequest.putKeyword("2");
+        adRequest.putKeyword("3");
+        Assert.assertEquals(3, adRequest.getKeywordsListSize());
+    }
+
+    @Test
     public void testPutParameter() {
         Assert.assertNull("Adding new key failed", adRequest.putParameter("test_key", "first_test"));
         Assert.assertEquals("first_test", adRequest.putParameter("test_key", "test_value1"));

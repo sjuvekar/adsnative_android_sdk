@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Adapter for ListView for proper displaying SponsoredStories
+ *
  * @param <T>
  */
 public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
@@ -29,6 +30,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private String adUnitId;
     private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
+    private List<String> adRequestKeywords;
 
     /**
      * Constructor initializes properties and converts table of integers into List and sorts it in
@@ -44,7 +46,8 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = new ArrayList<Integer>();
         for (Integer i : sponsoredStoriesPositions) {
-            this.sponsoredStoriesPositions.add(i);
+            if (i >= 0 && !this.sponsoredStoriesPositions.contains(i))
+                this.sponsoredStoriesPositions.add(i);
         }
         Collections.sort(this.sponsoredStoriesPositions);
         this.sponsoredStories = new ArrayList<SponsoredStory>();
@@ -62,6 +65,37 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 AdsNativeListAdapter.this.notifyDataSetInvalidated();
             }
         });
+    }
+
+    /**
+     * Base constructor with additional option of putting a list of {@link com.adsnative.android.sdk.request.AdRequest} keywords
+     *
+     * @param context
+     * @param originalAdapter
+     * @param sponsoredStoriesPositions
+     * @param adUnitId
+     * @param adRequestKeywords
+     */
+    public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, List<String> adRequestKeywords) {
+        this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
+        this.adRequestKeywords = new ArrayList<String>();
+        this.adRequestKeywords = adRequestKeywords;
+    }
+
+    /**
+     * Base constructor with additional option of putting an array of {@link com.adsnative.android.sdk.request.AdRequest} keywords
+     *
+     * @param context
+     * @param originalAdapter
+     * @param sponsoredStoriesPositions
+     * @param adUnitId
+     * @param adRequestKeywords
+     */
+    public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, String[] adRequestKeywords) {
+        this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
+        this.adRequestKeywords = new ArrayList<String>();
+        for (String s : adRequestKeywords)
+            this.adRequestKeywords.add(s);
     }
 
     /**
@@ -100,7 +134,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
         if (sponsoredStoriesPositions.size() > 0) {
             for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
                 final int position = sponsoredStoriesPositions.get(i);
-                final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId), context);
+                final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId, adRequestKeywords), context);
                 sponsoredStory.loadRequest();
                 sponsoredStory.setOnSponsoredStoryListener(new OnSponsoredStoryListener() {
                     @Override
@@ -130,14 +164,14 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * @param sponsoredStory
      * @param i
      */
-    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
-        this.sponsoredStories.add(sponsoredStory);
-        if (i == sponsoredStoriesPositions.size() - 1) {
-            this.clearAds();
-            this.positionController.replaceSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
-            this.internalNotifyDataSetChanged();
-        }
-    }
+//    private void addSponsoredStories(SponsoredStory sponsoredStory, int i) {
+//        this.sponsoredStories.add(sponsoredStory);
+//        if (i == sponsoredStoriesPositions.size() - 1) {
+//            this.clearAds();
+//            this.positionController.replaceSponsoredStories(this.sponsoredStories, this.sponsoredStoriesPositions);
+//            this.internalNotifyDataSetChanged();
+//        }
+//    }
 
     /**
      * Returns the size of the whole list attached to ListView.
@@ -198,7 +232,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Provides View to be displayed at specified position.
      *
-     * @param position of the View
+     * @param position    of the View
      * @param convertView
      * @param parent
      * @return View to be displayed at specified position
