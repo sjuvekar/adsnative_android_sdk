@@ -1,5 +1,6 @@
 package com.adsnative.android.sdk.story;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.webkit.WebView;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 public class StoryWebViewClient extends WebViewClient {
 
     private ProgressBar progressBar;
+    private Context context;
 
     /**
      * Empty constructor for 1x1 drop pixel WebView.
