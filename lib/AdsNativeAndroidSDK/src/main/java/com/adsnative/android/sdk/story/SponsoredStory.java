@@ -35,7 +35,7 @@ public class SponsoredStory {
      * Constructor
      *
      * @param adRequest with AdUnitId
-     * @param context
+     * @param context context of an Application
      */
     public SponsoredStory(AdRequest adRequest, Context context) {
         this.adRequest = adRequest;
@@ -47,7 +47,7 @@ public class SponsoredStory {
     /**
      * Fetches AdvertisingId from device and after that starts task that fetches sponsored story
      */
-    public void loadRequest() {
+    protected void loadRequest() {
         if (Build.BRAND.equalsIgnoreCase("generic")) {
             //Allows lib to be run on emulator
             setUuid("");
@@ -71,7 +71,7 @@ public class SponsoredStory {
     /**
      * Uuid setter
      *
-     * @param uuid
+     * @param uuid id to be set
      */
     private void setUuid(String uuid) {
         this.uuid = uuid;
@@ -80,7 +80,7 @@ public class SponsoredStory {
     /**
      * Sponsored story data setter
      *
-     * @param sponsoredStoryData
+     * @param sponsoredStoryData data to be set
      */
     private void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
         this.sponsoredStoryData = sponsoredStoryData;
@@ -106,7 +106,7 @@ public class SponsoredStory {
 
     /**
      * Fetching SponsoredStory task.
-     * Triggers onSponsoredStoryData from {@link com.adsnative.android.sdk.story.OnSponsoredStoryDataListener}
+     * Triggers onSponsoredStoryData from {@link OnSponsoredStoryDataListener}
      * if SponsoredStory is completely fetched and data is correctly parsed. If SponsoredStoryData is null
      * nth is going to be triggered.
      */

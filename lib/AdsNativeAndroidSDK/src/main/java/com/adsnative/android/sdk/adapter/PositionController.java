@@ -38,7 +38,7 @@ public class PositionController {
     /**
      * Original size setter
      *
-     * @param originalSize
+     * @param originalSize specified size
      */
     private void setOriginalSize(int originalSize) {
         this.originalSize = originalSize;
@@ -70,17 +70,17 @@ public class PositionController {
     /**
      * Original position getter. Provides properly mapped position of original item of the list.
      *
-     * @param position
-     * @return mapped position
+     * @param position current position on the list with {@link com.adsnative.android.sdk.story.SponsoredStory} attached
+     * @return mapped position (original position)
      */
     public int getOriginalPosition(int position) {
         return this.originalPositionsList.get(position);
     }
 
     /**
-     * SponsoredStoriesPositionsListAdjusted getter. Provides list of adjusted positions of the sponsored stories.
+     * SponsoredStoriesPositionsListAdjusted getter. Provides list of adjusted positions of the {@link com.adsnative.android.sdk.story.SponsoredStory}.
      *
-     * @return list of adjusted positions of the sponsored stories
+     * @return list of adjusted positions of the {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public List<Integer> getSponsoredStoriesPositionsListAdjusted() {
         return this.sponsoredStoriesPositionsListAdjusted;
@@ -99,7 +99,7 @@ public class PositionController {
     /**
      * Provides SponsoredStory from specified position of the ListView.
      *
-     * @param position
+     * @param position specified position
      * @return SponsoredStory if there is one in @param position, otherwise {@code null}
      */
     public SponsoredStory getSponsoredStory(int position) {
@@ -171,8 +171,8 @@ public class PositionController {
     /**
      * Inserts single SponsoredStory into specified position.
      *
-     * @param sponsoredStory
-     * @param position
+     * @param sponsoredStory specified {@link com.adsnative.android.sdk.story.SponsoredStory} to be added
+     * @param position specified position of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the list
      */
     public void insertSponsoredStory(SponsoredStory sponsoredStory, int position) {
         sponsoredStoriesList.add(sponsoredStory);
@@ -181,9 +181,9 @@ public class PositionController {
     }
 
     /**
-     * Adjust SponsoredStory position list starting from specified position.
+     * Inserts specified {@link com.adsnative.android.sdk.story.SponsoredStory} position into {@code SponsoredStoriesPositionsListAdjusted}
      *
-     * @param position
+     * @param position specified position of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the list
      */
     private void adjustSponsoredStoriesPositionsList(int position) {
         mergedListSize++;
@@ -194,7 +194,7 @@ public class PositionController {
     }
 
     /**
-     * Updates mapping of original positions. It has to be done after any data changes of the ListView.
+     * Updates mapping of original positions. It has to be done after any data changes on the ListView.
      */
     public void updateLists() {
         HashMap<Integer, Integer> tmpHashMap = new HashMap<Integer, Integer>();

@@ -21,15 +21,6 @@
  */
 package com.github.kevinsawicki.http;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CREATED;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.Proxy.Type.HTTP;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -86,9 +77,18 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.Proxy.Type.HTTP;
+
 /**
  * A fluid interface for making HTTP requests using an underlying
- * {@link HttpURLConnection} (or sub-class).
+ * {@link java.net.HttpURLConnection} (or sub-class).
  * <p>
  * Each instance supports making a single request and cannot be reused for
  * further requests.
@@ -333,28 +333,28 @@ public class HttpRequest {
     }
 
     /**
-     * Creates {@link HttpURLConnection HTTP connections} for
-     * {@link URL urls}.
+     * Creates {@link java.net.HttpURLConnection HTTP connections} for
+     * {@link java.net.URL urls}.
      */
     public interface ConnectionFactory {
         /**
-         * Open an {@link HttpURLConnection} for the specified {@link URL}.
+         * Open an {@link java.net.HttpURLConnection} for the specified {@link java.net.URL}.
          *
-         * @throws IOException
+         * @throws java.io.IOException
          */
         HttpURLConnection create(URL url) throws IOException;
 
         /**
-         * Open an {@link HttpURLConnection} for the specified {@link URL}
-         * and {@link Proxy}.
+         * Open an {@link java.net.HttpURLConnection} for the specified {@link java.net.URL}
+         * and {@link java.net.Proxy}.
          *
-         * @throws IOException
+         * @throws java.io.IOException
          */
         HttpURLConnection create(URL url, Proxy proxy) throws IOException;
 
         /**
          * A {@link ConnectionFactory} which uses the built-in
-         * {@link URL#openConnection()}
+         * {@link java.net.URL#openConnection()}
          */
         ConnectionFactory DEFAULT = new ConnectionFactory() {
             public HttpURLConnection create(URL url) throws IOException {
@@ -627,7 +627,7 @@ public class HttpRequest {
     }
 
     /**
-     * HTTP request exception whose cause is always an {@link IOException}
+     * HTTP request exception whose cause is always an {@link java.io.IOException}
      */
     public static class HttpRequestException extends RuntimeException {
 
@@ -643,9 +643,9 @@ public class HttpRequest {
         }
 
         /**
-         * Get {@link IOException} that triggered this request exception
+         * Get {@link java.io.IOException} that triggered this request exception
          *
-         * @return {@link IOException} cause
+         * @return {@link java.io.IOException} cause
          */
         @Override
         public IOException getCause() {
@@ -666,14 +666,14 @@ public class HttpRequest {
          *
          * @return result
          * @throws HttpRequestException
-         * @throws IOException
+         * @throws java.io.IOException
          */
         protected abstract V run() throws HttpRequestException, IOException;
 
         /**
          * Operation complete callback
          *
-         * @throws IOException
+         * @throws java.io.IOException
          */
         protected abstract void done() throws IOException;
 
@@ -699,7 +699,7 @@ public class HttpRequest {
     }
 
     /**
-     * Class that ensures a {@link Closeable} gets closed with proper exception
+     * Class that ensures a {@link java.io.Closeable} gets closed with proper exception
      * handling.
      *
      * @param <V>
@@ -738,7 +738,7 @@ public class HttpRequest {
     }
 
     /**
-     * Class that and ensures a {@link Flushable} gets flushed with proper
+     * Class that and ensures a {@link java.io.Flushable} gets flushed with proper
      * exception handling.
      *
      * @param <V>
@@ -788,7 +788,7 @@ public class HttpRequest {
          *
          * @param value
          * @return this stream
-         * @throws IOException
+         * @throws java.io.IOException
          */
         public RequestOutputStream write(final String value) throws IOException {
             final ByteBuffer bytes = encoder.encode(CharBuffer.wrap(value));
@@ -805,8 +805,8 @@ public class HttpRequest {
      * This method ensures the path and query segments of the URL are properly
      * encoded such as ' ' characters being encoded to '%20' or any UTF-8
      * characters that are non-ASCII. No encoding of URLs is done by default by
-     * the {@link HttpRequest} constructors and so if URL encoding is needed this
-     * method should be called before calling the {@link HttpRequest} constructor.
+     * the {@link com.github.kevinsawicki.http.HttpRequest} constructors and so if URL encoding is needed this
+     * method should be called before calling the {@link com.github.kevinsawicki.http.HttpRequest} constructor.
      *
      * @param url
      * @return encoded URL
@@ -960,7 +960,7 @@ public class HttpRequest {
      * @param encode
      *          true to encode the full URL
      *
-     * @see #append(CharSequence, Map)
+     * @see #append(CharSequence, java.util.Map)
      * @see #encode(CharSequence)
      *
      * @return request
@@ -1024,7 +1024,7 @@ public class HttpRequest {
      * @param encode
      *          true to encode the full URL
      *
-     * @see #append(CharSequence, Map)
+     * @see #append(CharSequence, java.util.Map)
      * @see #encode(CharSequence)
      *
      * @return request
@@ -1088,7 +1088,7 @@ public class HttpRequest {
      * @param encode
      *          true to encode the full URL
      *
-     * @see #append(CharSequence, Map)
+     * @see #append(CharSequence, java.util.Map)
      * @see #encode(CharSequence)
      *
      * @return request
@@ -1152,7 +1152,7 @@ public class HttpRequest {
      * @param encode
      *          true to encode the full URL
      *
-     * @see #append(CharSequence, Map)
+     * @see #append(CharSequence, java.util.Map)
      * @see #encode(CharSequence)
      *
      * @return request
@@ -1216,7 +1216,7 @@ public class HttpRequest {
      * @param encode
      *          true to encode the full URL
      *
-     * @see #append(CharSequence, Map)
+     * @see #append(CharSequence, java.util.Map)
      * @see #encode(CharSequence)
      *
      * @return request
@@ -1486,7 +1486,7 @@ public class HttpRequest {
 
     /**
      * Set whether or not to ignore exceptions that occur from calling
-     * {@link Closeable#close()}
+     * {@link java.io.Closeable#close()}
      * <p>
      * The default value of this setting is <code>true</code>
      *
@@ -1499,7 +1499,7 @@ public class HttpRequest {
     }
 
     /**
-     * Get whether or not exceptions thrown by {@link Closeable#close()} are
+     * Get whether or not exceptions thrown by {@link java.io.Closeable#close()} are
      * ignored
      *
      * @return true if ignoring, false if throwing
@@ -1524,7 +1524,7 @@ public class HttpRequest {
     }
 
     /**
-     * Set the value of the given {@link AtomicInteger} to the status code of the
+     * Set the value of the given {@link java.util.concurrent.atomic.AtomicInteger} to the status code of the
      * response
      *
      * @param output
@@ -1679,7 +1679,7 @@ public class HttpRequest {
      * This will only affect requests that have the 'Content-Encoding' response
      * header set to 'gzip'.
      * <p>
-     * This causes all receive methods to use a {@link GZIPInputStream} when
+     * This causes all receive methods to use a {@link java.util.zip.GZIPInputStream} when
      * applicable so that higher level streams and readers can read the data
      * uncompressed.
      * <p>
@@ -2300,7 +2300,7 @@ public class HttpRequest {
     }
 
     /**
-     * Set value of {@link HttpURLConnection#setUseCaches(boolean)}
+     * Set value of {@link java.net.HttpURLConnection#setUseCaches(boolean)}
      *
      * @param useCaches
      * @return this request
@@ -2566,7 +2566,7 @@ public class HttpRequest {
      * @param input
      * @param output
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest copy(final InputStream input, final OutputStream output)
             throws IOException {
@@ -2592,7 +2592,7 @@ public class HttpRequest {
      * @param input
      * @param output
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest copy(final Reader input, final Writer output)
             throws IOException {
@@ -2638,7 +2638,7 @@ public class HttpRequest {
      *
      * @return this request
      * @throws HttpRequestException
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest closeOutput() throws IOException {
         progress(null);
@@ -2659,7 +2659,7 @@ public class HttpRequest {
     }
 
     /**
-     * Call {@link #closeOutput()} and re-throw a caught {@link IOException}s as
+     * Call {@link #closeOutput()} and re-throw a caught {@link java.io.IOException}s as
      * an {@link HttpRequestException}
      *
      * @return this request
@@ -2677,7 +2677,7 @@ public class HttpRequest {
      * Open output stream
      *
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest openOutput() throws IOException {
         if (output != null)
@@ -2694,7 +2694,7 @@ public class HttpRequest {
      * Start part of a multipart
      *
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest startPart() throws IOException {
         if (!multipart) {
@@ -2712,7 +2712,7 @@ public class HttpRequest {
      * @param name
      * @param filename
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest writePartHeader(final String name, final String filename)
             throws IOException {
@@ -2726,7 +2726,7 @@ public class HttpRequest {
      * @param filename
      * @param contentType
      * @return this request
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected HttpRequest writePartHeader(final String name,
                                           final String filename, final String contentType) throws IOException {
@@ -3155,7 +3155,7 @@ public class HttpRequest {
 
     /**
      * Configure HTTPS connection to trust all hosts using a custom
-     * {@link HostnameVerifier} that always returns <code>true</code> for each
+     * {@link javax.net.ssl.HostnameVerifier} that always returns <code>true</code> for each
      * host verified
      * <p>
      * This method does nothing if the current request is not a HTTPS request
@@ -3171,7 +3171,7 @@ public class HttpRequest {
     }
 
     /**
-     * Get the {@link URL} of this request's connection
+     * Get the {@link java.net.URL} of this request's connection
      *
      * @return request URL
      */

@@ -3,7 +3,7 @@ package com.adsnative.android.sdk.story;
 import android.graphics.Bitmap;
 
 /**
- * Container class for SponsoredStory data fetched from server
+ * Container class for SponsoredStory data fetched from server and parsed from JSON response
  */
 
 public class SponsoredStoryData {

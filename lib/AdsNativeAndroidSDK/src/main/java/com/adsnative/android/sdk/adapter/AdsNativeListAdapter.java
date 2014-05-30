@@ -34,10 +34,10 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * Constructor initializes properties and converts table of integers into List and sorts it in
      * ascending way. It also registers data observer for original adapter.
      *
-     * @param context
-     * @param originalAdapter
-     * @param sponsoredStoriesPositions
-     * @param adUnitId
+     * @param context context of an Application
+     * @param originalAdapter instance of an original adapter of the ListView
+     * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
+     * @param adUnitId AdsNative user ID
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.originalAdapter = originalAdapter;
@@ -66,11 +66,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Base constructor with additional option of putting a list of {@link com.adsnative.android.sdk.request.AdRequest} keywords
      *
-     * @param context
-     * @param originalAdapter
-     * @param sponsoredStoriesPositions
-     * @param adUnitId
-     * @param adRequestKeywords
+     * @param context context of an Application
+     * @param originalAdapter instance of an original adapter of the ListView
+     * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
+     * @param adUnitId AdsNative user ID
+     * @param adRequestKeywords list of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, List<String> adRequestKeywords) {
         this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
@@ -81,11 +81,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Base constructor with additional option of putting an array of {@link com.adsnative.android.sdk.request.AdRequest} keywords
      *
-     * @param context
-     * @param originalAdapter
-     * @param sponsoredStoriesPositions
-     * @param adUnitId
-     * @param adRequestKeywords
+     * @param context context of an Application
+     * @param originalAdapter instance of an original adapter of the ListView
+     * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
+     * @param adUnitId AdsNative user ID
+     * @param adRequestKeywords an array of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, String[] adRequestKeywords) {
         this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
@@ -114,7 +114,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Clears all Ads attached to ListView
      */
-    public void clearAds() {
+    public void clearSponsoredStories() {
         this.sponsoredStoryController.clearSponsoredStories();
         this.positionController.clearSponsoredStories();
         internalNotifyDataSetChanged();
@@ -143,8 +143,8 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Adds SponsoredStory into specified position
      *
-     * @param sponsoredStory
-     * @param position
+     * @param sponsoredStory specified {@link com.adsnative.android.sdk.story.SponsoredStory} to be added to the ListView
+     * @param position specified position
      */
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.positionController.insertSponsoredStory(sponsoredStory, position);
@@ -219,7 +219,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Provides View to be displayed at specified position.
      *
-     * @param position    of the View
+     * @param position of a View
      * @param convertView
      * @param parent
      * @return View to be displayed at specified position

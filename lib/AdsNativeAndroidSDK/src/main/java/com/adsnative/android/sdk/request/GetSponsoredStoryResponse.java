@@ -69,15 +69,27 @@ public class GetSponsoredStoryResponse extends AdResponse {
         return null;
     }
 
+    /**
+     * Extracts url String from JSON response from html content of field 'trackingTags'
+     *
+     * @param trackingTags - value of JSON field 'trackingTags'
+     * @return
+     */
     private String extractUrlFromTrackingTags(String trackingTags) {
         int length = trackingTags.length();
         return trackingTags.substring(10, length - 29);
     }
 
-    private String checkHttp(String value) {
-        if (value.startsWith("http:"))
-            return value;
+    /**
+     * Checks if specified string (usually url) starts with "http:"
+     *
+     * @param url - specified url
+     * @return
+     */
+    private String checkHttp(String url) {
+        if (url.startsWith("http:"))
+            return url;
         else
-            return "http:" + value;
+            return "http:" + url;
     }
 }
