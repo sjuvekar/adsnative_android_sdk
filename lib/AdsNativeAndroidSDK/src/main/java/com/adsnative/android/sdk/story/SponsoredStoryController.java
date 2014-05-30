@@ -32,9 +32,9 @@ public class SponsoredStoryController {
     private OnSponsoredStoryListener onSponsoredStoryListener;
 
     /**
-     * Constructor with cached sponsored stories positions list from listview
+     * Constructor
      *
-     * @param context
+     * @param context context of an Application
      */
     public SponsoredStoryController(Context context) {
         this.context = context;
@@ -48,7 +48,7 @@ public class SponsoredStoryController {
      * Fetches {@link com.adsnative.android.sdk.story.SponsoredStory} without any keywords
      *
      * @param adUnitId AdsNative user ID
-     * @return
+     * @return fetched {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public SponsoredStory fetchSponsoredStory(String adUnitId) {
         return this.fetchSponsoredStory(adUnitId, null);
@@ -58,8 +58,8 @@ public class SponsoredStoryController {
      * Fetches {@link com.adsnative.android.sdk.story.SponsoredStory} with specified keywords
      *
      * @param adUnitId          AdsNative user ID
-     * @param adRequestKeywords list of requested keywords
-     * @return
+     * @param adRequestKeywords list of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
+     * @return fetched {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public SponsoredStory fetchSponsoredStory(String adUnitId, List<String> adRequestKeywords) {
         final SponsoredStory sponsoredStory = new SponsoredStory(new AdRequest(adUnitId, adRequestKeywords), context);
@@ -76,7 +76,7 @@ public class SponsoredStoryController {
     /**
      * Adds specified SponsoredStory to the property list of SponsoredStories
      *
-     * @param sponsoredStory
+     * @param sponsoredStory provided {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     private void addSponsoredStory(SponsoredStory sponsoredStory) {
         this.sponsoredStories.add(sponsoredStory);
@@ -84,7 +84,7 @@ public class SponsoredStoryController {
     }
 
     /**
-     * Sets OnSponsoredStoryListener to know when the story is completely added to the {@link com.adsnative.android.sdk.story.SponsoredStoryController}
+     * Sets OnSponsoredStoryListener to know when the story is completely added to the {@link SponsoredStoryController}
      *
      * @param onSponsoredStoryListener
      */
@@ -93,35 +93,47 @@ public class SponsoredStoryController {
     }
 
     /**
-     * * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, int sponsoredStoryId)
+     * * Check {@link SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory)
      *
-     * @param sponsoredStory
-     * @return
+     * @return default View combined with recently fetched {@link com.adsnative.android.sdk.story.SponsoredStory}
+     */
+    public View getSponsoredStoryView(){
+        if (sponsoredStories.size() > 0){
+            return this.getSponsoredStoryView(sponsoredStories.get(sponsoredStories.size() - 1));
+        }
+        return null;
+    }
+
+    /**
+     * * Check {@link SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView)
+     *
+     * @param sponsoredStory provided {@link com.adsnative.android.sdk.story.SponsoredStory}
+     * @return default View combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public View getSponsoredStoryView(SponsoredStory sponsoredStory) {
         return this.getSponsoredStoryView(sponsoredStory, null);
     }
 
     /**
-     * Check {@link com.adsnative.android.sdk.story.SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent, int sponsoredStoryId)
+     * Check {@link SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent)
      *
-     * @param sponsoredStory
-     * @param convertView    if is {@code null} proper layout will be rendered for View
-     * @return fully functional SponsoredStory View
+     * @param sponsoredStory provided {@link com.adsnative.android.sdk.story.SponsoredStory}
+     * @param convertView must be an intance of {@link android.widget.RelativeLayout}, if is {@code null} default layout will be rendered for View
+     * @return specified View combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView) {
         return this.getSponsoredStoryView(sponsoredStory, convertView, null);
     }
 
     /**
-     * Uses getStoryView(SponsoredStoryData) to render proper layout of SponsoredStory.
-     * Maps SponsoredStories to its proper Views. Sets SponsoredStory click listener
-     * and log impression by displaying 1x1 drop pixel.
+     * Uses getStoryView(SponsoredStoryData) to render default layout of {@link com.adsnative.android.sdk.story.SponsoredStory}.
+     * Method also maps {@link com.adsnative.android.sdk.story.SponsoredStory} to its proper View. It sets SponsoredStory click listener
+     * and logs impression by displaying 1x1 drop pixel.
      *
-     * @param sponsoredStory
-     * @param convertView    if {@code null} default layout will be rendered for View
-     * @param parent         if {@code null} generated view is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
-     * @return
+     * @param sponsoredStory provided {@link com.adsnative.android.sdk.story.SponsoredStory}
+     * @param convertView    must be an intance of {@link android.widget.RelativeLayout}, if {@code null} default layout will be rendered for View
+     * @param parent         if {@code null} generated View is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
+     * @return specified View attached to specified parent combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -157,7 +169,7 @@ public class SponsoredStoryController {
     /**
      * Provides 1x1 drop pixel WebView
      *
-     * @param sponsoredStoryData
+     * @param sponsoredStoryData provided {@link com.adsnative.android.sdk.story.SponsoredStoryData}
      * @return created 1x1 size WebView
      */
     private View getImpressionPixel(SponsoredStoryData sponsoredStoryData) {
@@ -230,6 +242,14 @@ public class SponsoredStoryController {
         this.sponsoredStories.clear();
         this.sponsoredStoryWeakHashMap.clear();
         this.impressionsList.clear();
+    }
+
+    /**
+     * Return the amount of fetched SponsoredStory
+     * @return number of fetched SponsoredStory
+     */
+    public int getSponsoredStoriesCount(){
+        return this.sponsoredStories.size();
     }
 
     /**

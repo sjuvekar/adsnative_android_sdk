@@ -1,65 +1,16 @@
-//Running 'gradle makeJar' in AdsNativeAndroidSDK folder (in current project) creates a AdsNativeAndroidSDK.jar in the build/libs directory
-
-apply plugin: 'android-library'
-apply plugin: 'robolectric'
-
-android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
-
-    sourceSets {
-        main {
-            java {
-                srcDir 'src/main/java'
-            }
-            resources {
-                srcDir 'src/main/res'
-            }
-        }
-
-        androidTest.setRoot('src/test')
-    }
-}
+//to build with tests run this command in project directory: ./gradlew robolectric
+apply plugin: 'java'
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.+'
-    compile 'com.google.android.gms:play-services:4.3.23'
-
-    androidTestCompile 'org.robolectric:robolectric:2.2'
-    androidTestCompile 'junit:junit:4.+'
-    androidTestCompile "org.mockito:mockito-all:1.9.5"
-
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/google-play-services.jar')
+    compile files('libs/android.jar')
 }
 
-task clearJar(type: Delete) {
-    delete 'build/libs/AdsNativeAndroidSDK.jar'
+task proguard(type: proguard.gradle.ProGuardTask) {
+    configuration 'proguard.conf'
+    injars  'build/libs/AdsNativeAndroidSDK.jar'
+    outjars  'build/libs/proguard/AdsNativeAndroidSDK.jar'
+    libraryjars 'libs/android.jar'
+    libraryjars 'libs/google-play-services.jar'
 }
-
-//task jar(type: Jar) {
-//    from('build/libs/AdsNativeAndroidSDK')
-////    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-//}
-
-
-task makeJar(type: Copy) {
-    from('build/bundles/release/')
-    into('build/libs/')
-    include('classes.jar')
-    rename('classes.jar', 'AdsNativeAndroidSDK.jar')
-}
-
-makeJar.dependsOn(clearJar, build)
-

@@ -4,6 +4,11 @@ package com.adsnative.android.sdk.util;
  * Util class for capitalizing strings
  */
 public class StringUtil {
+    /**
+     * Capitalizes specified String.
+     * @param s provided string
+     * @return
+     */
     public String capitalize(String s) {
         if (s == null || s.length() == 0) {
             return "";
