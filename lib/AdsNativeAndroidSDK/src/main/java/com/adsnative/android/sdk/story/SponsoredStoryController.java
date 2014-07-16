@@ -16,7 +16,6 @@ import com.adsnative.android.sdk.WebViewActivity;
 import com.adsnative.android.sdk.request.AdRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,7 +24,6 @@ import java.util.List;
 public class SponsoredStoryController {
 
     private final Context context;
-    private final HashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private List<String> impressionsList;
     private List<SponsoredStory> sponsoredStories;
     private OnSponsoredStoryListener onSponsoredStoryListener;
@@ -37,7 +35,6 @@ public class SponsoredStoryController {
      */
     public SponsoredStoryController(Context context) {
         this.context = context;
-        this.sponsoredStoryWeakHashMap = new HashMap<View, SponsoredStory>();
         this.impressionsList = new ArrayList<String>();
         this.sponsoredStories = new ArrayList<SponsoredStory>();
     }
@@ -254,7 +251,6 @@ public class SponsoredStoryController {
      */
     public void clearSponsoredStories() {
         this.sponsoredStories.clear();
-        this.sponsoredStoryWeakHashMap.clear();
         this.impressionsList.clear();
     }
 

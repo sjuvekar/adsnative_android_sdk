@@ -57,8 +57,7 @@ public class GetSponsoredStoryRequest {
      * @return complete url for request
      */
     private String getUrl() {
-//        return "http://sims-mobile.dev.iteo.com.pl/error";
-                return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + getParams();
+        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + getParams();
     }
 
     /**
