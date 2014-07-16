@@ -23,6 +23,7 @@ public class SponsoredStoryData {
     private String campaignId;
     private String sessionId;
     private String zoneId;
+    private String uuid;
     private Bitmap thumbnailBitmap;
 
     public String getTitle() {
@@ -143,6 +144,14 @@ public class SponsoredStoryData {
 
     public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Bitmap getThumbnailBitmap() {

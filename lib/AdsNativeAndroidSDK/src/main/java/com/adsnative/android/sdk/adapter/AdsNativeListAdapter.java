@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
+import com.adsnative.android.sdk.story.FailureMessage;
 import com.adsnative.android.sdk.story.OnSponsoredStoryDataListener;
 import com.adsnative.android.sdk.story.SponsoredStory;
 import com.adsnative.android.sdk.story.SponsoredStoryController;
@@ -25,6 +26,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
+    private List<Integer> sponsoredStoriesPositionsCached;
     private String adUnitId;
     private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
@@ -34,17 +36,19 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * Constructor initializes properties and converts table of integers into List and sorts it in
      * ascending way. It also registers data observer for original adapter.
      *
-     * @param context context of an Application
-     * @param originalAdapter instance of an original adapter of the ListView
+     * @param context                   context of an Application
+     * @param originalAdapter           instance of an original adapter of the ListView
      * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
-     * @param adUnitId AdsNative user ID
+     * @param adUnitId                  AdsNative user ID
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = new ArrayList<Integer>();
+        this.sponsoredStoriesPositionsCached = new ArrayList<Integer>();
         for (Integer i : sponsoredStoriesPositions) {
-            if (i >= 0 && !this.sponsoredStoriesPositions.contains(i))
+            if (i >= 0 && !this.sponsoredStoriesPositions.contains(i)) {
                 this.sponsoredStoriesPositions.add(i);
+            }
         }
         Collections.sort(this.sponsoredStoriesPositions);
         this.positionController = new PositionController(this.originalAdapter.getCount());
@@ -66,11 +70,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Base constructor with additional option of putting a list of {@link com.adsnative.android.sdk.request.AdRequest} keywords
      *
-     * @param context context of an Application
-     * @param originalAdapter instance of an original adapter of the ListView
+     * @param context                   context of an Application
+     * @param originalAdapter           instance of an original adapter of the ListView
      * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
-     * @param adUnitId AdsNative user ID
-     * @param adRequestKeywords list of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
+     * @param adUnitId                  AdsNative user ID
+     * @param adRequestKeywords         list of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, List<String> adRequestKeywords) {
         this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
@@ -81,11 +85,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Base constructor with additional option of putting an array of {@link com.adsnative.android.sdk.request.AdRequest} keywords
      *
-     * @param context context of an Application
-     * @param originalAdapter instance of an original adapter of the ListView
+     * @param context                   context of an Application
+     * @param originalAdapter           instance of an original adapter of the ListView
      * @param sponsoredStoriesPositions positions of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the ListView, indexing starts with '0'
-     * @param adUnitId AdsNative user ID
-     * @param adRequestKeywords an array of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
+     * @param adUnitId                  AdsNative user ID
+     * @param adRequestKeywords         an array of keywords to attach to {@link com.adsnative.android.sdk.request.AdRequest}
      */
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId, String[] adRequestKeywords) {
         this(context, originalAdapter, sponsoredStoriesPositions, adUnitId);
@@ -122,33 +126,50 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     /**
      * Fetches and loads SponsoredStories to positions specified by Constructor.
-     * Sponsored stories are loaded asynchronously into ListView.
      */
     public void loadSponsoredStories() {
         this.sponsoredStoryController.clearSponsoredStories();
         if (sponsoredStoriesPositions.size() > 0) {
-            for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
-                final int position = sponsoredStoriesPositions.get(i);
-                final SponsoredStory sponsoredStory = sponsoredStoryController.fetchSponsoredStory(adUnitId, adRequestKeywords);
-                sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
-                    @Override
-                    public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
-                        addSponsoredStory(sponsoredStory, position);
-                    }
-                });
-            }
+            loadSponsoredStory();
         }
     }
 
     /**
-     * Adds SponsoredStory into specified position
+     * Fetches single {@link com.adsnative.android.sdk.story.SponsoredStory}
+     */
+    public void loadSponsoredStory() {
+        final int position = sponsoredStoriesPositions.get(0);
+        final SponsoredStory sponsoredStory = sponsoredStoryController.fetchSponsoredStory(adUnitId, adRequestKeywords);
+        sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
+            @Override
+            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+                addSponsoredStory(sponsoredStory, position);
+            }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+            }
+        });
+    }
+
+    /**
+     * Adds SponsoredStory into specified position, then check if there are any
+     * {@link com.adsnative.android.sdk.story.SponsoredStory} left to fetch
      *
      * @param sponsoredStory specified {@link com.adsnative.android.sdk.story.SponsoredStory} to be added to the ListView
-     * @param position specified position
+     * @param position       specified position
      */
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
+        sponsoredStoriesPositionsCached.add(sponsoredStoriesPositions.get(0));
+        sponsoredStoriesPositions.remove(0);
+        if (sponsoredStoriesPositions.size() > 0) {
+            loadSponsoredStory();
+        } else {
+            sponsoredStoriesPositions.addAll(sponsoredStoriesPositionsCached);
+            sponsoredStoriesPositionsCached.clear();
+        }
     }
 
     /**
@@ -219,7 +240,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     /**
      * Provides View to be displayed at specified position.
      *
-     * @param position of a View
+     * @param position    of a View
      * @param convertView
      * @param parent
      * @return View to be displayed at specified position

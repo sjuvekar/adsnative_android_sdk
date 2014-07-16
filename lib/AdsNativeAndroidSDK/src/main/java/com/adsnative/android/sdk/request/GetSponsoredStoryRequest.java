@@ -48,7 +48,6 @@ public class GetSponsoredStoryRequest {
             for (String s : adRequest.getKeywordsList())
                 params += "&keywords[]=" + s;
         }
-        params = params.replaceAll(" ", "%20");
         return params;
     }
 
@@ -58,7 +57,8 @@ public class GetSponsoredStoryRequest {
      * @return complete url for request
      */
     private String getUrl() {
-        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + getParams();
+//        return "http://sims-mobile.dev.iteo.com.pl/error";
+                return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + getParams();
     }
 
     /**
@@ -68,12 +68,10 @@ public class GetSponsoredStoryRequest {
      */
     public HttpRequest get() {
         try {
-            return HttpRequest.get(getUrl());
+            return HttpRequest.get(HttpRequest.encode(getUrl()));
         } catch (HttpRequest.HttpRequestException exception) {
             Log.e(Constants.ERROR_TAG, exception.getMessage());
             return null;
         }
     }
-
-
 }

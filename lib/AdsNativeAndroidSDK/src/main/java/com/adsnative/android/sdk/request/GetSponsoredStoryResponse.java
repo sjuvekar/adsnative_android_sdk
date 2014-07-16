@@ -3,6 +3,7 @@ package com.adsnative.android.sdk.request;
 import android.util.Log;
 
 import com.adsnative.android.sdk.Constants;
+import com.adsnative.android.sdk.story.FailureMessage;
 import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import org.json.JSONException;
@@ -15,6 +16,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
 
     private int count;
     private SponsoredStoryData storyData;
+    private FailureMessage failureMessage;
 
     /**
      * Constructor
@@ -43,7 +45,10 @@ public class GetSponsoredStoryResponse extends AdResponse {
 
                 if (ad != null) {
                     storyData.setTrackingTags(checkHttp(extractUrlFromTrackingTags(ad.getString("trackingTags"))));
-                    storyData.setBackgroundColor(ad.getString("backgroundColor"));
+                    if (ad.isNull("backgroundColor") || ad.getString("backgroundColor").isEmpty())
+                        storyData.setBackgroundColor("#00FFFFFF");
+                    else
+                        storyData.setBackgroundColor(ad.getString("backgroundColor"));
                     storyData.setUrl(checkHttp(ad.getString("url")));
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));
@@ -58,9 +63,33 @@ public class GetSponsoredStoryResponse extends AdResponse {
                 storyData.setCampaignId(data.getString("cid"));
                 storyData.setCreativeId(data.getString("crid"));
                 storyData.setSessionId(data.getString("sid"));
+                storyData.setUuid(data.getString("uuid"));
                 storyData.setZoneId(data.getString("zid"));
 
                 return storyData;
+            } catch (JSONException e) {
+                Log.e(Constants.ERROR_TAG, e.getMessage());
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Parses JSON data from failure response
+     *
+     * @return {@link com.adsnative.android.sdk.story.FailureMessage} object with parsed data from failure response,
+     * if something went wrong with parsing returns {@code null}
+     */
+    public FailureMessage getFailureMessage() {
+        if (status.equalsIgnoreCase("FAIL")) {
+            try {
+                failureMessage = new FailureMessage();
+                failureMessage.setMessage(data.getString("message"));
+                failureMessage.setUuid(data.getString("uuid"));
+                failureMessage.setZid(data.getString("zid"));
+
+                return failureMessage;
             } catch (JSONException e) {
                 Log.e(Constants.ERROR_TAG, e.getMessage());
                 return null;

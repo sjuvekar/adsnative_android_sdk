@@ -9,4 +9,11 @@ public interface OnSponsoredStoryDataListener {
      */
     public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData);
 
+    /**
+     * Should be triggered when response failed and failure message is added to the {@link com.adsnative.android.sdk.story.SponsoredStoryController}
+     *
+     * @param failureMessage
+     */
+    public void onFailure(FailureMessage failureMessage);
+
 }

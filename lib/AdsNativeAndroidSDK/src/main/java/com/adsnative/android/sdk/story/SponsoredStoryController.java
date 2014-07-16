@@ -16,8 +16,8 @@ import com.adsnative.android.sdk.WebViewActivity;
 import com.adsnative.android.sdk.request.AdRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
 
 /**
  * Controller and renderer of the SponsoredStories attached to ListView
@@ -25,8 +25,7 @@ import java.util.WeakHashMap;
 public class SponsoredStoryController {
 
     private final Context context;
-    private final SponsoredStoryClickListener sponsoredStoryClickListener;
-    private final WeakHashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
+    private final HashMap<View, SponsoredStory> sponsoredStoryWeakHashMap;
     private List<String> impressionsList;
     private List<SponsoredStory> sponsoredStories;
     private OnSponsoredStoryListener onSponsoredStoryListener;
@@ -38,8 +37,7 @@ public class SponsoredStoryController {
      */
     public SponsoredStoryController(Context context) {
         this.context = context;
-        this.sponsoredStoryClickListener = new SponsoredStoryClickListener();
-        this.sponsoredStoryWeakHashMap = new WeakHashMap(4, 0.75f);
+        this.sponsoredStoryWeakHashMap = new HashMap<View, SponsoredStory>();
         this.impressionsList = new ArrayList<String>();
         this.sponsoredStories = new ArrayList<SponsoredStory>();
     }
@@ -69,6 +67,11 @@ public class SponsoredStoryController {
             public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
                 addSponsoredStory(sponsoredStory);
             }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+                onSponsoredStoryListener.onFailure(failureMessage);
+            }
         });
         return sponsoredStory;
     }
@@ -93,12 +96,19 @@ public class SponsoredStoryController {
     }
 
     /**
+     * Gets OnSponsoredStoryListener
+     */
+    public OnSponsoredStoryListener getOnSponsoredStoryListener() {
+        return this.onSponsoredStoryListener;
+    }
+
+    /**
      * * Check {@link SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory)
      *
      * @return default View combined with recently fetched {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
-    public View getSponsoredStoryView(){
-        if (sponsoredStories.size() > 0){
+    public View getSponsoredStoryView() {
+        if (sponsoredStories.size() > 0) {
             return this.getSponsoredStoryView(sponsoredStories.get(sponsoredStories.size() - 1));
         }
         return null;
@@ -118,7 +128,7 @@ public class SponsoredStoryController {
      * Check {@link SponsoredStoryController}.getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent)
      *
      * @param sponsoredStory provided {@link com.adsnative.android.sdk.story.SponsoredStory}
-     * @param convertView must be an intance of {@link android.widget.RelativeLayout}, if is {@code null} default layout will be rendered for View
+     * @param convertView    must be an intance of {@link android.widget.RelativeLayout}, if is {@code null} default layout will be rendered for View
      * @return specified View combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView) {
@@ -135,23 +145,27 @@ public class SponsoredStoryController {
      * @param parent         if {@code null} generated View is not going to be attached to any parent, if convertView is already attached to any parent it's going to be removed and attached to the specified one
      * @return specified View attached to specified parent combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
-    public View getSponsoredStoryView(SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
+    public View getSponsoredStoryView(final SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null) {
+        if (view == null || (view.getTag() == null || !view.getTag().equals(sponsoredStory.getSponsoredStoryData().getSessionId()))) {
             view = getStoryView(sponsoredStory.getSponsoredStoryData());
         }
 
-        SponsoredStory newData = sponsoredStory;
-        SponsoredStory oldData = (SponsoredStory) this.sponsoredStoryWeakHashMap.get(view);
-        if (oldData != newData) {
-            sponsoredStoryWeakHashMap.put(view, newData);
-        }
-
-        view.setOnClickListener(this.sponsoredStoryClickListener);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, WebViewActivity.class);
+                intent.putExtra("crid", sponsoredStory.getSponsoredStoryData().getCreativeId());
+                intent.putExtra("sid", sponsoredStory.getSponsoredStoryData().getSessionId());
+                intent.putExtra("url", sponsoredStory.getSponsoredStoryData().getUrl());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
 
         String sid = sponsoredStory.getSponsoredStoryData().getSessionId();
         if (!impressionsList.contains(sid)) {
-            if (!newData.getSponsoredStoryData().getTrackingTags().isEmpty())
+            if (!sponsoredStory.getSponsoredStoryData().getTrackingTags().isEmpty())
                 ((RelativeLayout) view).addView(getImpressionPixel(sponsoredStory.getSponsoredStoryData()));
             impressionsList.add(sid);
         }
@@ -187,7 +201,6 @@ public class SponsoredStoryController {
      * @return rendered View
      */
     private View getStoryView(SponsoredStoryData sponsoredStoryData) {
-
         float density = context.getResources().getDisplayMetrics().density;
 
         RelativeLayout relativeLayout = new RelativeLayout(context);
@@ -232,6 +245,7 @@ public class SponsoredStoryController {
         linearLayout.setBackgroundColor(Color.parseColor(sponsoredStoryData.getBackgroundColor()));
         relativeLayout.addView(linearLayout);
 
+        relativeLayout.setTag(sponsoredStoryData.getSessionId());
         return relativeLayout;
     }
 
@@ -246,32 +260,10 @@ public class SponsoredStoryController {
 
     /**
      * Return the amount of fetched SponsoredStory
+     *
      * @return number of fetched SponsoredStory
      */
-    public int getSponsoredStoriesCount(){
+    public int getSponsoredStoriesCount() {
         return this.sponsoredStories.size();
-    }
-
-    /**
-     * Click listener for SponsoredStory Views
-     */
-    private final class SponsoredStoryClickListener implements View.OnClickListener {
-
-        /**
-         * Open proper WebView and starts {@link com.adsnative.android.sdk.WebViewActivity}
-         * for SponsoredStory attached to  after the click action was performed
-         *
-         * @param v
-         */
-        @Override
-        public void onClick(View v) {
-            SponsoredStory sponsoredStory = sponsoredStoryWeakHashMap.get(v);
-            Intent intent = new Intent(context, WebViewActivity.class);
-            intent.putExtra("crid", sponsoredStory.getSponsoredStoryData().getCreativeId());
-            intent.putExtra("sid", sponsoredStory.getSponsoredStoryData().getSessionId());
-            intent.putExtra("url", sponsoredStory.getSponsoredStoryData().getUrl());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        }
     }
 }
