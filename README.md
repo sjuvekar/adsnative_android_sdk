@@ -47,7 +47,7 @@ Go to *Project > Properties > Java Build Path > Libraries > Add external Jar* an
                android:configChanges="orientation|screenSize" />
 ```
 
-**5.** Minimum Android SDK: Android 4.0.3 API (15)
+**5.** Minimum Android SDK: Android 2.3 API (9)
 
 ## Using AdsNative APIs ##
 
@@ -93,6 +93,11 @@ sponsoredStoryController.setOnSponsoredStoryListener(new OnSponsoredStoryListene
             public void onSponsoredStory(SponsoredStory sponsoredStory) {
                 View view = sponsoredStoryController.getSponsoredStoryView(sponsoredStory);
             }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+                Log.e(ERROR_TAG, failureMessage.getMessage());
+            }
 });
 ```
 
@@ -119,10 +124,17 @@ sponsoredStoryController.setOnSponsoredStoryListener(new OnSponsoredStoryListene
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
                 relativeLayout.addView(view, layoutParams);
             }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+                Log.e(ERROR_TAG, failureMessage.getMessage());
+            }
 });
 ```
 
 #### Attach data to developers custom Views that are inside specified layout. Provided layout has already been attached to some sort of a parent, i.e. in xml layout files. ####
+
+Adding session ID tag to developers custom view is obligatory, in order to protect from render conflicts.
 
 ```
 #!java
@@ -136,13 +148,20 @@ sponsoredStoryController.setOnSponsoredStoryListener(new OnSponsoredStoryListene
             @Override
             public void onSponsoredStory(SponsoredStory sponsoredStory) {
                 textView.set("I'm SponsoredStory with title: " + sponsoredStory.getSponsoredStoryData().getTitle());
+                relativeLayout.setTag(sponsoredStory.getSponsoredStoryData().getSessionId());
                 sponsoredStoryController.getSponsoredStoryView(sponsoredStory, relativeLayout);
+            }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+                Log.e(ERROR_TAG, failureMessage.getMessage());
             }
 });
 ```
 
 #### Attach data to developers custom Views that are inside specified Layout, that has NOT been attached to any parent. #####
 
+Adding session ID tag to developers custom view is obligatory, in order to protect from render conflicts.
 
 ```
 #!java
@@ -158,7 +177,13 @@ sponsoredStoryController.setOnSponsoredStoryListener(new OnSponsoredStoryListene
             @Override
             public void onSponsoredStory(SponsoredStory sponsoredStory) {
                 textView.set("I'm SponsoredStory with title: " + sponsoredStory.getSponsoredStoryData().getTitle());
+                relativeLayout.setTag(sponsoredStory.getSponsoredStoryData().getSessionId());
                 sponsoredStoryController.getSponsoredStoryView(sponsoredStory, relativeLayout, mParent);
+            }
+
+            @Override
+            public void onFailure(FailureMessage failureMessage) {
+                Log.e(ERROR_TAG, failureMessage.getMessage());
             }
 });
 ```
