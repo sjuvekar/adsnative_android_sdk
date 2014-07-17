@@ -98,18 +98,11 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     }
 
     /**
-     * Use notifyDataSetChanged of a BaseAdapter class.
-     */
-    private void baseNotifyDataSetChanged(){
-        super.notifyDataSetChanged();
-    }
-
-    /**
      * Updates positions of items of the list and notifies ListView about it.
      */
     private void internalNotifyDataSetChanged() {
         this.positionController.updateLists();
-        baseNotifyDataSetChanged();
+        super.notifyDataSetChanged();
     }
 
     /**
@@ -143,7 +136,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
                     @Override
                     public void onSponsoredStoryData() {
-                        baseNotifyDataSetChanged();
+                        AdsNativeListAdapter.this.notifyDataSetChanged();
                     }
 
                     @Override
