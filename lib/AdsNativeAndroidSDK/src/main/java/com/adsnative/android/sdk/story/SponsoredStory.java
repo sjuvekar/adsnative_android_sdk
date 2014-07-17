@@ -12,6 +12,7 @@ import com.adsnative.android.sdk.device.GetAdvertisingId;
 import com.adsnative.android.sdk.request.AdRequest;
 import com.adsnative.android.sdk.request.GetSponsoredStoryRequest;
 import com.adsnative.android.sdk.request.GetSponsoredStoryResponse;
+import com.github.kevinsawicki.http.HttpRequest;
 
 import org.json.JSONException;
 
@@ -35,13 +36,13 @@ public class SponsoredStory {
      * Constructor
      *
      * @param adRequest with AdUnitId
-     * @param context context of an Application
+     * @param context   context of an Application
      */
     public SponsoredStory(AdRequest adRequest, Context context) {
         this.adRequest = adRequest;
         this.context = context;
         this.deviceInfo = new DeviceInfo(context);
-        this.sponsoredStoryData = new SponsoredStoryData();
+        this.sponsoredStoryData = null;
     }
 
     /**
@@ -82,7 +83,7 @@ public class SponsoredStory {
      *
      * @param sponsoredStoryData data to be set
      */
-    private void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+    public void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
         this.sponsoredStoryData = sponsoredStoryData;
     }
 
@@ -92,7 +93,7 @@ public class SponsoredStory {
      * @return this sponsoredStoryData object
      */
     public SponsoredStoryData getSponsoredStoryData() {
-        return this.sponsoredStoryData;
+        return sponsoredStoryData;
     }
 
     /**
@@ -124,12 +125,24 @@ public class SponsoredStory {
         protected SponsoredStoryData doInBackground(String... params) {
             GetSponsoredStoryRequest getSponsoredStoryRequest =
                     new GetSponsoredStoryRequest(adRequest, uuid, deviceInfo);
-            String json = getSponsoredStoryRequest.get().body();
+            String json = null;
+            try {
+                json = getSponsoredStoryRequest.get().body();
+            } catch (HttpRequest.HttpRequestException e) {
+                Log.e(Constants.ERROR_TAG, e.getMessage());
+                onSponsoredStoryDataListener.onFailure(new FailureMessage("Internet connection problem"));
+            }
+
             if (json != null) {
                 SponsoredStoryData sponsoredStoryData = null;
                 try {
-                    sponsoredStoryData = new GetSponsoredStoryResponse(json).parseJson();
-                    sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream()));
+                    GetSponsoredStoryResponse getSponsoredStoryResponse = new GetSponsoredStoryResponse(json);
+                    if (getSponsoredStoryResponse.getStatus().equalsIgnoreCase("OK")) {
+                        sponsoredStoryData = getSponsoredStoryResponse.parseJson();
+                        sponsoredStoryData.setThumbnailBitmap(BitmapFactory.decodeStream(new URL(sponsoredStoryData.getThumbnailUrl()).openConnection().getInputStream()));
+                    } else if (getSponsoredStoryResponse.getStatus().equalsIgnoreCase("FAIL")) {
+                        onSponsoredStoryDataListener.onFailure(getSponsoredStoryResponse.getFailureMessage());
+                    }
                 } catch (JSONException e) {
                     Log.e(Constants.ERROR_TAG, e.getMessage());
                     return null;
@@ -143,7 +156,6 @@ public class SponsoredStory {
                 return sponsoredStoryData;
             }
             return null;
-
         }
 
         @Override
@@ -151,7 +163,7 @@ public class SponsoredStory {
             super.onPostExecute(sponsoredStoryData);
             if (sponsoredStoryData != null) {
                 setSponsoredStoryData(sponsoredStoryData);
-                onSponsoredStoryDataListener.onSponsoredStoryData(sponsoredStoryData);
+                onSponsoredStoryDataListener.onSponsoredStoryData();
             }
         }
     }

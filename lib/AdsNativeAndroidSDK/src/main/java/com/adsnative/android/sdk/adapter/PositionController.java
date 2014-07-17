@@ -74,7 +74,7 @@ public class PositionController {
      * @return mapped position (original position)
      */
     public int getOriginalPosition(int position) {
-        return this.originalPositionsList.get(position);
+        return originalPositionsList.get(position);
     }
 
     /**
@@ -206,9 +206,8 @@ public class PositionController {
                     tmpHashMap.put(j, originalPositionsList.get(j));
                 }
 
-                for (Integer j = i; j < range; j++) {
+                for (Integer j = i; j < range; j++)
                     originalPositionsList.put(j + 1, tmpHashMap.get(j));
-                }
 
                 originalPositionsList.remove(i);
                 range++;

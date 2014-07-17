@@ -48,7 +48,6 @@ public class GetSponsoredStoryRequest {
             for (String s : adRequest.getKeywordsList())
                 params += "&keywords[]=" + s;
         }
-        params = params.replaceAll(" ", "%20");
         return params;
     }
 
@@ -68,12 +67,10 @@ public class GetSponsoredStoryRequest {
      */
     public HttpRequest get() {
         try {
-            return HttpRequest.get(getUrl());
+            return HttpRequest.get(HttpRequest.encode(getUrl()));
         } catch (HttpRequest.HttpRequestException exception) {
             Log.e(Constants.ERROR_TAG, exception.getMessage());
             return null;
         }
     }
-
-
 }

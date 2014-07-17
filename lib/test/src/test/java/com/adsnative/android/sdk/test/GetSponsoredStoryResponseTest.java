@@ -5,9 +5,8 @@ import android.util.Log;
 import com.adsnative.android.sdk.Constants;
 import com.adsnative.android.sdk.request.GetSponsoredStoryResponse;
 
-import org.junit.Assert;
-
 import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +16,10 @@ import org.robolectric.RobolectricTestRunner;
 public class GetSponsoredStoryResponseTest {
 
     private GetSponsoredStoryResponse getSponsoredStoryResponse;
+    private GetSponsoredStoryResponse getFailureSponsoredStoryResponse;
     private String json = "{" +
             "   \"ad\": {" +
-            "       \"backgroundColor\": \"#fefff2\"," +
+            "       \"backgroundColor\": \"\"," +
             "       \"brandImageUrl\": \"http://dev-www.adsnative.com/media/brand_images/1/82cc86ad-9070-4b90-9006-1fbca6697694.jpg\"," +
             "       \"embedUrl\": \"http://dev-api.adsnative.com/v1/creative.html?crid=LFGRP9OI&sid=tnqvzhb71xh8da4349n1myyhhkp4k8r3\"," +
             "       \"imageSrc\": \"http://dev-www.adsnative.com/media/1/cfc02947-4103-4f57-ba0d-fda9d8a6c6ff.jpg\"," +
@@ -42,10 +42,18 @@ public class GetSponsoredStoryResponseTest {
             "   \"zid\": \"ping\"" +
             "}";
 
+    private String failureJson = "{" +
+            "   \"message\": \"no active campaigns found\"," +
+            "   \"status\": \"FAIL\"," +
+            "   \"uuid\": \"415244eb-569a-42cc-a86b-f02774607128\"," +
+            "   \"zid\": \"eLrChVb179ztK7Go3NfWbkZEe4_MRzKGfPVN4Zcs\"" +
+            "}";
+
     @Before
     public void setup() {
         try {
             getSponsoredStoryResponse = new GetSponsoredStoryResponse(json);
+            getFailureSponsoredStoryResponse = new GetSponsoredStoryResponse(failureJson);
         } catch (JSONException e) {
             Log.e(Constants.ERROR_TAG, e.getMessage());
         }
@@ -60,5 +68,21 @@ public class GetSponsoredStoryResponseTest {
     public void testStatus() {
         Assert.assertEquals("OK", getSponsoredStoryResponse.getStatus());
     }
+
+    @Test
+    public void testEmptyBackgroundColour(){
+        Assert.assertEquals("#00FFFFFF", getSponsoredStoryResponse.parseJson().getBackgroundColor());
+    }
+
+    @Test
+    public void testGetFailureMessage() {
+        Assert.assertNotNull(getFailureSponsoredStoryResponse.getFailureMessage());
+    }
+
+    @Test
+    public void testFailureStatus() {
+        Assert.assertEquals("FAIL", getFailureSponsoredStoryResponse.getStatus());
+    }
+
 
 }
