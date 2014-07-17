@@ -25,7 +25,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
     private T originalAdapter;
     private List<Integer> sponsoredStoriesPositions;
-    private List<Integer> sponsoredStoriesPositionsCached;
     private String adUnitId;
     private PositionController positionController;
     private SponsoredStoryController sponsoredStoryController;
@@ -43,7 +42,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     public AdsNativeListAdapter(Context context, T originalAdapter, int[] sponsoredStoriesPositions, String adUnitId) {
         this.originalAdapter = originalAdapter;
         this.sponsoredStoriesPositions = new ArrayList<Integer>();
-        this.sponsoredStoriesPositionsCached = new ArrayList<Integer>();
         for (Integer i : sponsoredStoriesPositions) {
             if (i >= 0 && !this.sponsoredStoriesPositions.contains(i)) {
                 this.sponsoredStoriesPositions.add(i);
@@ -141,7 +139,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
 
                     @Override
                     public void onFailure(FailureMessage failureMessage) {
-
                     }
                 });
             }
