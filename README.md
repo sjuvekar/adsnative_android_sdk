@@ -47,7 +47,7 @@ Go to *Project > Properties > Java Build Path > Libraries > Add external Jar* an
                android:configChanges="orientation|screenSize" />
 ```
 
-**5.** Minimum Android SDK: Android 4.0.3 API (15)
+**5.** Minimum Android SDK: Android 2.3 API (9)
 
 ## Using AdsNative APIs ##
 
