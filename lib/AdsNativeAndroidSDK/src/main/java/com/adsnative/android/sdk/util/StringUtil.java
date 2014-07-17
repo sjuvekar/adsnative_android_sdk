@@ -7,7 +7,7 @@ public class StringUtil {
     /**
      * Capitalizes specified String.
      * @param s provided string
-     * @return
+     * @return capitalized String
      */
     public String capitalize(String s) {
         if (s == null || s.length() == 0) {

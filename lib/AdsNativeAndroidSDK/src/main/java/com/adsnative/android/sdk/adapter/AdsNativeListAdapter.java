@@ -212,7 +212,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
      * Gets id of the ListView item at specified position.
      *
      * @param position of the object
-     * @return {@value -1} if there is SponsoredStory at position, otherwise returns mapped position of the original item
+     * @return -1 if there is SponsoredStory at position, otherwise returns mapped position of the original item
      */
     @Override
     public long getItemId(int position) {

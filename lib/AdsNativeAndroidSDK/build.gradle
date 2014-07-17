@@ -14,3 +14,12 @@ task proguard(type: proguard.gradle.ProGuardTask) {
     libraryjars 'libs/android.jar'
     libraryjars 'libs/google-play-services.jar'
 }
+
+//generate javadoc by running: gradle myJavadoc
+task myJavadocs(type: Javadoc) {
+    exclude "**/kevinsawicki/**"
+    source = sourceSets.main.allJava
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    classpath = configurations.compile
+    destinationDir = file("./doc/")
+}
