@@ -11,7 +11,6 @@ import com.adsnative.android.sdk.story.FailureMessage;
 import com.adsnative.android.sdk.story.OnSponsoredStoryDataListener;
 import com.adsnative.android.sdk.story.SponsoredStory;
 import com.adsnative.android.sdk.story.SponsoredStoryController;
-import com.adsnative.android.sdk.story.SponsoredStoryData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,11 +98,18 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     }
 
     /**
+     * Use notifyDataSetChanged of a BaseAdapter class.
+     */
+    private void baseNotifyDataSetChanged(){
+        super.notifyDataSetChanged();
+    }
+
+    /**
      * Updates positions of items of the list and notifies ListView about it.
      */
     private void internalNotifyDataSetChanged() {
         this.positionController.updateLists();
-        super.notifyDataSetChanged();
+        baseNotifyDataSetChanged();
     }
 
     /**
@@ -130,26 +136,23 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     public void loadSponsoredStories() {
         this.sponsoredStoryController.clearSponsoredStories();
         if (sponsoredStoriesPositions.size() > 0) {
-            loadSponsoredStory();
-        }
-    }
-
-    /**
-     * Fetches single {@link com.adsnative.android.sdk.story.SponsoredStory}
-     */
-    public void loadSponsoredStory() {
-        final int position = sponsoredStoriesPositions.get(0);
-        final SponsoredStory sponsoredStory = sponsoredStoryController.fetchSponsoredStory(adUnitId, adRequestKeywords);
-        sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
-            @Override
-            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+            for (int i = 0; i < sponsoredStoriesPositions.size(); i++) {
+                final int position = sponsoredStoriesPositions.get(i);
+                final SponsoredStory sponsoredStory = sponsoredStoryController.fetchSponsoredStory(adUnitId, adRequestKeywords);
                 addSponsoredStory(sponsoredStory, position);
-            }
+                sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
+                    @Override
+                    public void onSponsoredStoryData() {
+                        baseNotifyDataSetChanged();
+                    }
 
-            @Override
-            public void onFailure(FailureMessage failureMessage) {
+                    @Override
+                    public void onFailure(FailureMessage failureMessage) {
+
+                    }
+                });
             }
-        });
+        }
     }
 
     /**
@@ -162,14 +165,6 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
     private void addSponsoredStory(SponsoredStory sponsoredStory, int position) {
         this.positionController.insertSponsoredStory(sponsoredStory, position);
         this.internalNotifyDataSetChanged();
-        sponsoredStoriesPositionsCached.add(sponsoredStoriesPositions.get(0));
-        sponsoredStoriesPositions.remove(0);
-        if (sponsoredStoriesPositions.size() > 0) {
-            loadSponsoredStory();
-        } else {
-            sponsoredStoriesPositions.addAll(sponsoredStoriesPositionsCached);
-            sponsoredStoriesPositionsCached.clear();
-        }
     }
 
     /**

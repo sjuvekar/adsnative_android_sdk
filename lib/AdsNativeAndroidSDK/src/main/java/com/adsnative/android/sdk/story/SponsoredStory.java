@@ -42,7 +42,7 @@ public class SponsoredStory {
         this.adRequest = adRequest;
         this.context = context;
         this.deviceInfo = new DeviceInfo(context);
-        this.sponsoredStoryData = new SponsoredStoryData();
+        this.sponsoredStoryData = null;
     }
 
     /**
@@ -83,7 +83,7 @@ public class SponsoredStory {
      *
      * @param sponsoredStoryData data to be set
      */
-    private void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+    public void setSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
         this.sponsoredStoryData = sponsoredStoryData;
     }
 
@@ -93,7 +93,7 @@ public class SponsoredStory {
      * @return this sponsoredStoryData object
      */
     public SponsoredStoryData getSponsoredStoryData() {
-        return this.sponsoredStoryData;
+        return sponsoredStoryData;
     }
 
     /**
@@ -163,7 +163,7 @@ public class SponsoredStory {
             super.onPostExecute(sponsoredStoryData);
             if (sponsoredStoryData != null) {
                 setSponsoredStoryData(sponsoredStoryData);
-                onSponsoredStoryDataListener.onSponsoredStoryData(sponsoredStoryData);
+                onSponsoredStoryDataListener.onSponsoredStoryData();
             }
         }
     }

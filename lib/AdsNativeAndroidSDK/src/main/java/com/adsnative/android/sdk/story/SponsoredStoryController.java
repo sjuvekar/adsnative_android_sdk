@@ -61,7 +61,7 @@ public class SponsoredStoryController {
         sponsoredStory.loadRequest();
         sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
             @Override
-            public void onSponsoredStoryData(SponsoredStoryData sponsoredStoryData) {
+            public void onSponsoredStoryData() {
                 addSponsoredStory(sponsoredStory);
             }
 
@@ -143,6 +143,9 @@ public class SponsoredStoryController {
      * @return specified View attached to specified parent combined with specified {@link com.adsnative.android.sdk.story.SponsoredStory}
      */
     public View getSponsoredStoryView(final SponsoredStory sponsoredStory, View convertView, ViewGroup parent) {
+        if (sponsoredStory.getSponsoredStoryData() == null)
+            return new View(context);
+
         View view = convertView;
         if (view == null || (view.getTag() == null || !view.getTag().equals(sponsoredStory.getSponsoredStoryData().getSessionId()))) {
             view = getStoryView(sponsoredStory.getSponsoredStoryData());
