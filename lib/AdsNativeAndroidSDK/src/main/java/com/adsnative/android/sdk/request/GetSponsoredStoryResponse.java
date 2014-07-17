@@ -102,7 +102,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
      * Extracts url String from JSON response from html content of field 'trackingTags'
      *
      * @param trackingTags - value of JSON field 'trackingTags'
-     * @return
+     * @return extracted url String
      */
     private String extractUrlFromTrackingTags(String trackingTags) {
         int length = trackingTags.length();
@@ -113,7 +113,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
      * Checks if specified string (usually url) starts with "http:"
      *
      * @param url - specified url
-     * @return
+     * @return String with 'http:' in the beginning
      */
     private String checkHttp(String url) {
         if (url.startsWith("http:"))
