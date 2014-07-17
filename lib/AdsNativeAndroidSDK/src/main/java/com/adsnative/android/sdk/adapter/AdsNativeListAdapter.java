@@ -136,7 +136,7 @@ public class AdsNativeListAdapter<T extends ListAdapter> extends BaseAdapter {
                 sponsoredStory.setOnSponsoredStoryDataListener(new OnSponsoredStoryDataListener() {
                     @Override
                     public void onSponsoredStoryData() {
-                        AdsNativeListAdapter.this.notifyDataSetChanged();
+                        AdsNativeListAdapter.super.notifyDataSetChanged();
                     }
 
                     @Override
