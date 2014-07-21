@@ -95,7 +95,7 @@ public class NewsActivity extends ListActivity {
         clearAds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adsNativeListAdapter.clearAds();
+                adsNativeListAdapter.clearSponsoredStories();
                 clearAds.setVisibility(View.GONE);
                 fetchAds.setVisibility(View.VISIBLE);
             }

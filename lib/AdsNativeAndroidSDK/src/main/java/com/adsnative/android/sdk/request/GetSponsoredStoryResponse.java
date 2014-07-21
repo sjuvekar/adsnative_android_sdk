@@ -49,6 +49,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
                         storyData.setBackgroundColor("#00FFFFFF");
                     else
                         storyData.setBackgroundColor(ad.getString("backgroundColor"));
+                    storyData.setBrandImageUrl(checkHttp(ad.getString("brandImageUrl")));
                     storyData.setUrl(checkHttp(ad.getString("url")));
                     storyData.setTitle(ad.getString("title"));
                     storyData.setSummary(ad.getString("summary"));
