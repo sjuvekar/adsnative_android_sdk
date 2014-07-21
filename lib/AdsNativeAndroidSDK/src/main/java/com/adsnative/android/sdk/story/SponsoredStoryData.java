@@ -12,6 +12,7 @@ public class SponsoredStoryData {
     private String trackingTags;
     private String summary;
     private String backgroundColor;
+    private String brandImageUrl;
     private String url;
     private String type;
     private String promotedBy;
@@ -56,6 +57,14 @@ public class SponsoredStoryData {
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public String getBrandImageUrl() {
+        return brandImageUrl;
+    }
+
+    public void setBrandImageUrl(String brandImageUrl) {
+        this.brandImageUrl = brandImageUrl;
     }
 
     public String getUrl() {
