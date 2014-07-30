@@ -8,8 +8,10 @@ import com.github.kevinsawicki.http.HttpRequest;
 /**
  * Builds url for time logging request and performs GET call to API
  */
-public class LogTimeRequest extends LogImpressionRequest {
+public class LogTimeRequest {
     private long loggedTime;
+    private String creativeId;
+    private String sessionId;
 
     /**
      * Constructor
@@ -19,17 +21,18 @@ public class LogTimeRequest extends LogImpressionRequest {
      * @param sessionId
      */
     public LogTimeRequest(long loggedTime, String creativeId, String sessionId) {
-        super(creativeId, sessionId);
         this.loggedTime = loggedTime;
+        this.creativeId = creativeId;
+        this.sessionId = sessionId;
     }
 
     /**
-     * Builds time parameter for url
+     * Builds parameters for url
      *
-     * @return time parameter
+     * @return parameters
      */
-    private String getTime() {
-        return "&time_spent=" + loggedTime;
+     protected String getParams() {
+        return "crid=" + this.creativeId + "&sid=" + this.sessionId + "&time_spent=" + loggedTime;
     }
 
     /**
@@ -38,7 +41,7 @@ public class LogTimeRequest extends LogImpressionRequest {
      * @return complete url
      */
     private String getUrl() {
-        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/log/time?" + getParams() + getTime();
+        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/log/time?" + getParams();
     }
 
 
