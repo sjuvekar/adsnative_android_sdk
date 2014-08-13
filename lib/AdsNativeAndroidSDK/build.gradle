@@ -15,7 +15,7 @@ task proguard(type: proguard.gradle.ProGuardTask) {
     libraryjars 'libs/google-play-services.jar'
 }
 
-//generate javadoc by running: gradle myJavadoc
+//generate javadoc by running: ./gradlew myJavadoc
 task myJavadocs(type: Javadoc) {
     exclude "**/kevinsawicki/**"
     source = sourceSets.main.allJava

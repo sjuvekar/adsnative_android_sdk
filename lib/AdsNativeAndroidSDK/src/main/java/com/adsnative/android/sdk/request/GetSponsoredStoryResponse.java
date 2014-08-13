@@ -44,7 +44,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
                 JSONObject ad = data.getJSONObject("ad");
 
                 if (ad != null) {
-                    storyData.setTrackingTags(checkHttp(extractUrlFromTrackingTags(ad.getString("trackingTags"))));
+                    storyData.setTrackingTags(buildHtmlCode(ad.getString("trackingTags")));
                     if (ad.isNull("backgroundColor") || ad.getString("backgroundColor").isEmpty())
                         storyData.setBackgroundColor("#00FFFFFF");
                     else
@@ -100,14 +100,13 @@ public class GetSponsoredStoryResponse extends AdResponse {
     }
 
     /**
-     * Extracts url String from JSON response from html content of field 'trackingTags'
+     * Builds HTML String code from JSON response
      *
      * @param trackingTags - value of JSON field 'trackingTags'
-     * @return extracted url String
+     * @return build HTML string code
      */
-    private String extractUrlFromTrackingTags(String trackingTags) {
-        int length = trackingTags.length();
-        return trackingTags.substring(10, length - 29);
+    private String buildHtmlCode(String trackingTags) {
+        return  "<html><head></head><body>" + trackingTags + "</body></html>";
     }
 
     /**

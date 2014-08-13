@@ -190,7 +190,7 @@ public class SponsoredStoryController {
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
         webView.setWebViewClient(new StoryWebViewClient());
-        webView.loadUrl(sponsoredStoryData.getTrackingTags());
+        webView.loadData(sponsoredStoryData.getTrackingTags(), "text/html", null);
         return webView;
     }
 
