@@ -2,10 +2,11 @@ package com.adsnative.android.sdk.device;
 
 import android.content.Context;
 import android.os.Build;
-import android.provider.Settings;
 import android.webkit.WebView;
 
 import com.adsnative.android.sdk.util.StringUtil;
+
+import org.odinmobile.android.ODIN;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -46,17 +47,16 @@ public class DeviceInfo {
         this.timeZone = TimeZone.getDefault().getDisplayName();
         this.identifierForVendor = context.getApplicationContext().getPackageName();
 
-        Connectivity connectivity = new Connectivity();
-        if (!connectivity.isConnected(context))
+        if (!Connectivity.isConnected(context))
             this.connectionType = "None";
 
-        if (connectivity.isConnectedMobile(context))
+        if (Connectivity.isConnectedMobile(context))
             this.connectionType = "WWAN";
 
-        if (connectivity.isConnectedWifi(context))
+        if (Connectivity.isConnectedWifi(context))
             this.connectionType = "Wifi";
 
-        this.ODIN1 = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        this.ODIN1 = ODIN.getODIN1(context);
     }
 
     /**

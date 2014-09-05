@@ -18,6 +18,7 @@ task proguard(type: proguard.gradle.ProGuardTask) {
 //generate javadoc by running: ./gradlew myJavadoc
 task myJavadocs(type: Javadoc) {
     exclude "**/kevinsawicki/**"
+    exclude "**/org/odinmobile/android/**"
     source = sourceSets.main.allJava
     options.memberLevel = JavadocMemberLevel.PRIVATE
     classpath = configurations.compile
