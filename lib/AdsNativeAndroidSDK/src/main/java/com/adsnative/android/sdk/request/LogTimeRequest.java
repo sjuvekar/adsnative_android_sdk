@@ -31,7 +31,7 @@ public class LogTimeRequest {
      *
      * @return parameters
      */
-     protected String getParams() {
+    protected String getParams() {
         return "crid=" + this.creativeId + "&sid=" + this.sessionId + "&time_spent=" + loggedTime;
     }
 

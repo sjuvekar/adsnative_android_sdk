@@ -3,7 +3,6 @@ package com.adsnative.android.sdk.story;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 
 import com.adsnative.android.sdk.Constants;
@@ -49,24 +48,18 @@ public class SponsoredStory {
      * Fetches AdvertisingId from device and after that starts task that fetches sponsored story
      */
     protected void loadRequest() {
-        if (Build.BRAND.equalsIgnoreCase("generic")) {
-            //Allows lib to be run on emulator
-            setUuid("");
-            new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
-        } else {
-            new GetAdvertisingId(context) {
-                @Override
-                protected void onPostExecute(String s) {
-                    super.onPostExecute(s);
-                    if (s != null) {
-                        setUuid(s);
-                    } else {
-                        setUuid("");
-                    }
-                    new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
+        new GetAdvertisingId(context) {
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                if (s != null) {
+                    setUuid(s);
+                } else {
+                    setUuid("");
                 }
-            }.execute();
-        }
+                new GetSponsoredStoryTask(adRequest, deviceInfo).execute();
+            }
+        }.execute();
     }
 
     /**

@@ -9,7 +9,8 @@ public class FailureMessage {
     private String uuid;
     private String zid;
 
-    public FailureMessage(){}
+    public FailureMessage() {
+    }
 
     public FailureMessage(String message) {
         this.message = message;

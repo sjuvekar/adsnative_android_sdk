@@ -172,7 +172,7 @@ public class PositionController {
      * Inserts single SponsoredStory into specified position.
      *
      * @param sponsoredStory specified {@link com.adsnative.android.sdk.story.SponsoredStory} to be added
-     * @param position specified position of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the list
+     * @param position       specified position of the {@link com.adsnative.android.sdk.story.SponsoredStory} on the list
      */
     public void insertSponsoredStory(SponsoredStory sponsoredStory, int position) {
         sponsoredStoriesList.add(sponsoredStory);

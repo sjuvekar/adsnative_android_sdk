@@ -106,7 +106,7 @@ public class GetSponsoredStoryResponse extends AdResponse {
      * @return build HTML string code
      */
     private String buildHtmlCode(String trackingTags) {
-        return  "<html><head></head><body>" + trackingTags + "</body></html>";
+        return "<html><head></head><body>" + trackingTags + "</body></html>";
     }
 
     /**

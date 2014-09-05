@@ -6,6 +6,7 @@ package com.adsnative.android.sdk.util;
 public class StringUtil {
     /**
      * Capitalizes specified String.
+     *
      * @param s provided string
      * @return capitalized String
      */
