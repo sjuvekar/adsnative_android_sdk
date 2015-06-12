@@ -42,8 +42,13 @@ public class CustomViewsActivity extends Activity {
 
             @Override
             public void onFailure(FailureMessage failureMessage) {
-                Log.d(ERROR_TAG, failureMessage.getMessage());
-            }
+		if (failureMessage == null) {
+		    Log.e(ERROR_TAG, "Failed to load sponsored story and received empty Failure Message");
+		}
+		else {
+		    Log.d(ERROR_TAG, failureMessage.getMessage());
+		}
+	    }
         });
 
         final SponsoredStoryController sponsoredStoryController = new SponsoredStoryController(getBaseContext());
@@ -59,10 +64,16 @@ public class CustomViewsActivity extends Activity {
 
             @Override
             public void onFailure(FailureMessage failureMessage) {
-                Log.e(ERROR_TAG, failureMessage.getMessage());
-            }
+		if (failureMessage == null) {
+		    Log.e(ERROR_TAG, "Failed to load sponsored story and received empty Failure Message");
+		}
+		else {
+		    Log.e(ERROR_TAG, failureMessage.getMessage());
+		}
+	    }
         });
 
 
     }
 }
+€ý5:qa
