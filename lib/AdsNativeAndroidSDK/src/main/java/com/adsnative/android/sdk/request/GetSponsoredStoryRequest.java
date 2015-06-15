@@ -36,20 +36,20 @@ public class GetSponsoredStoryRequest {
      *
      * @return parameters part of url
      */
-    private String getParams() {
-        String zid = adRequest.getAdUnitID();
-        String ua = deviceInfo.getUserAgent();
-        String al = deviceInfo.getLocale();
-        String tz = deviceInfo.getTimeZone();
-        String bd = deviceInfo.getConnectionType();
-        String odin1 = deviceInfo.getODIN1();
+    private String getParams() throws UnsupportedEncodingException {
+        String zid = URLEncoder.encode(adRequest.getAdUnitID(), "utf-8");
+        String ua = URLEncoder.encode(deviceInfo.getUserAgent(), "utf-8");
+        String al = URLEncoder.encode(deviceInfo.getLocale(), "utf-8");
+        String tz = URLEncoder.encode(deviceInfo.getTimeZone(), "utf-8");
+        String bd = URLEncoder.encode(deviceInfo.getConnectionType(), "utf-8");
+        String odin1 = URLEncoder.encode(deviceInfo.getODIN1(), "utf-8");
 
         String params = "zid=" + zid + "&app=1" + "&ua=" + ua + "&al=" + al + "&tz=" + tz +
                 "&uuid=" + uuid + "&bd=" + bd + "&odin1=" + odin1;
 
         if (adRequest.getKeywordsListSize() > 0) {
             for (String s : adRequest.getKeywordsList())
-                params += "&keywords[]=" + s;
+                params += "&keywords[]=" + URLEncoder.encode(s, "utf-8");
         }
         return params;
     }
@@ -60,7 +60,7 @@ public class GetSponsoredStoryRequest {
      * @return complete url for request
      */
     private String getUrl() throws UnsupportedEncodingException {
-        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + URLEncoder.encode(getParams(), "utf-8");
+        return "http://" + Constants.URL_HOST + "/" + Constants.VERSION + "/ad.json?" + getParams();
     }
 
     /**
